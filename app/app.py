@@ -31,7 +31,7 @@ FUNC = {
 @app.route('/', methods=['GET', 'POST'])
 def home():
     global G, NODES, FUNC, MODELS, A, W, T, H, graph_path, solution_path, journey_path, tour_path, mst_path
-    print(NODES)
+    print('top', NODES)
 
     if request.method == 'POST':
         request_args = list(request.form.to_dict().values())
@@ -41,6 +41,7 @@ def home():
                 NODES = int(request_args[0])
             except:
                 NODES = 1
+            print('new', NODES)
             
         func = request_args[1]
         if func == 'GO':
@@ -60,7 +61,7 @@ def home():
                 mst_path = mypack.saveGraph(MST[0], 'mst')
             
             for f in ['NN_0', 'NN_1', 'NN_2']:
-                print(NODES)
+                print('in', NODES)
                 try:
                     NODES = len(list(G.nodes())) if NODES == None else NODES
                 except AttributeError:
@@ -112,7 +113,7 @@ def home():
         #                            journey_path=journey_path,
         #                            tour_path=tour_path)
     NODES = mypack.random.randint(MIN_NODE, MAX_NODE)
-    print(NODES)
+    print('rand', NODES)
     G = mypack.getGraph(NODES)
     graph_path = mypack.saveGraph(G, 'mygraph')
     return render_template('index.html', graph_path=graph_path)
