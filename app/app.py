@@ -54,7 +54,7 @@ def home():
             return redirect('/algorithm')
         
         elif func == 'COMPARE':
-            mst, mst_w = mypack.getMST(G)
+            (mst, mst_w) = mypack.getMST(G)
             mst_path = mypack.saveGraph(mst, 'mst')
             
             for f in ['NN_0', 'NN_1', 'NN_2']:
@@ -68,7 +68,6 @@ def home():
                     'H': H0,
                     'Solution': mypack.saveTour(G, T0, f),
                     'Journey': mypack.saveVideo(f'journey_{f}').replace('/app', '') if len(H0) <= MAX_JRNY else None,
-                    # 'Journey': None,
                     'Tour': ' -> '.join([str(t[0]) for t in T0]) + ' -> 0'
                 }
             
