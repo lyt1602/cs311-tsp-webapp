@@ -103,8 +103,11 @@ def getMST(graph: nx.classes.digraph.DiGraph) -> tuple:
     Returns:
         tuple: (mst, weight)
     """
-    mst = nx.minimum_spanning_tree(graph)
-    return (mst, sum([mst.edges[u, v]['weight'] for (u, v) in mst.edges()]))
+    try:
+        mst = nx.minimum_spanning_tree(graph)
+        return (mst, sum([mst.edges[u, v]['weight'] for (u, v) in mst.edges()]))
+    except AttributeError:
+        return 'Fail to get MSTs'
 
 
 def getGraph(nodes: int, edges: int = 0) -> nx.classes.digraph.DiGraph:
