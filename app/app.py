@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 MAX_JRNY = 100
 MIN_NODE, MAX_NODE = 5,10
-G, A, W, T, G, graph_path, solution_path, journey_path, tour_path, mst_path = [None for _ in range(10)]
+G, A, W, T, G, NODES, graph_path, solution_path, journey_path, tour_path, mst_path = [None for _ in range(11)]
 
 MODELS = {
     f'NN_{i}': {
@@ -30,20 +30,20 @@ FUNC = {
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
-    global G, FUNC, MODELS, A, W, T, H, graph_path, solution_path, journey_path, tour_path, mst_path
+    global G, NODES, FUNC, MODELS, A, W, T, H, graph_path, solution_path, journey_path, tour_path, mst_path
 
     if request.method == 'POST':
         request_args = list(request.form.to_dict().values())
         
         try:
-            nodes = int(request_args[0])
+            NODES = int(request_args[0])
         except:
-            nodes = 1
+            NODES = 1
 
         func = request_args[1]
         
         if func == 'GO':
-            G = mypack.getGraph(nodes)
+            G = mypack.getGraph(NODES)
             graph_path = mypack.saveGraph(G, 'mygraph')
             return render_template('index.html', graph_path=graph_path)
         
@@ -59,8 +59,8 @@ def home():
                 mst_path = mypack.saveGraph(MST[0], 'mst')
             
             for f in ['NN_0', 'NN_1', 'NN_2']:
-                nodes = [i for i in list(G.nodes())]
-                A0, T0, W0, H0 = FUNC[f](G, nodes)
+                NODES = len(list(G.nodes())) if NODES == None else NODES
+                A0, T0, W0, H0 = FUNC[f](G, NODES)
                 if len(H0) <= MAX_JRNY:
                     mypack.getJourneyFrames(G, H0)
                 MODELS[f] = {
@@ -81,9 +81,9 @@ def home():
             
         # else:
         #     if func in ['NN_0', 'NN_1', 'NN_2']:
-        #         A, T, W, H = FUNC[func](G)
+        #         A, T, W, H = FUNC[func](G, NODES)
         #     else:
-        #         A, T, W = FUNC[func](G)
+        #         A, T, W = FUNC[func](G, NODES)
         #         H = None
         #     solution_path = mypack.saveTour(G, T, 'solution').replace('/app', '')
         #     mypack.getPathFrames(G, T)
@@ -106,8 +106,8 @@ def home():
         #                                             for t in T]) + ' -> 0',
         #                            journey_path=journey_path,
         #                            tour_path=tour_path)
-            
-    G = mypack.getGraph(mypack.random.randint(MIN_NODE, MAX_NODE))
+    NODES = mypack.random.randint(MIN_NODE, MAX_NODE)
+    G = mypack.getGraph(NODES)
     graph_path = mypack.saveGraph(G, 'mygraph')
     return render_template('index.html', graph_path=graph_path)
 

@@ -145,7 +145,7 @@ def NN_0(graph: nx.classes.digraph.DiGraph, nodes: list) -> tuple:
     history = []
 
     g = nx.Graph()
-    g.add_nodes_from(nodes)
+    g.add_nodes_from([n for n in range(nodes)])
 
     nodes = [True for _ in range(len(graph.nodes))]
     current = 0
@@ -168,7 +168,11 @@ def NN_0(graph: nx.classes.digraph.DiGraph, nodes: list) -> tuple:
     g.add_edge(current, 0, weight=graph.edges[current, 0]['weight'])
     history.append(set(g.edges()))
 
-    tour = nx.find_cycle(g)
+    try:
+        tour = nx.find_cycle(g)
+    except nx.exception.NetworkXNoCycle:
+        tour = 'nx.find_cycle(g) error'
+        
     total_weight = sum([g.edges[u, v]['weight'] for (u, v) in g.edges()])
 
     return (g, tour, total_weight, history)
@@ -186,7 +190,7 @@ def NN_1(graph: nx.classes.digraph.DiGraph, nodes: list) -> tuple:
         tuple: (solved graph, tour, weight, history)
     """
     g = nx.Graph()
-    g.add_nodes_from(nodes)
+    g.add_nodes_from([n for n in range(nodes)])
     history = []
 
     nodes = [True for _ in range(len(graph.nodes))]
@@ -222,7 +226,10 @@ def NN_1(graph: nx.classes.digraph.DiGraph, nodes: list) -> tuple:
             nodes[u], nodes[v] = False, False
             history.append(set(g.edges()))
 
-    tour = nx.find_cycle(g)
+    try:
+        tour = nx.find_cycle(g)
+    except nx.exception.NetworkXNoCycle:
+        tour = 'nx.find_cycle(g) error'
     total_weight = sum([g.edges[u, v]['weight'] for (u, v) in g.edges()])
 
     return (g, tour, total_weight, history)
@@ -240,7 +247,7 @@ def NN_2(graph: nx.classes.digraph.DiGraph, nodes: list) -> tuple:
         tuple: (solved graph, tour, weight, history)
     """
     g = nx.Graph()
-    g.add_nodes_from(nodes)
+    g.add_nodes_from([n for n in range(nodes)])
 
     visited, removed, history = [], [], []
     candidates = sorted({(u, v): graph.edges[u, v]['weight'] for (
@@ -277,7 +284,10 @@ def NN_2(graph: nx.classes.digraph.DiGraph, nodes: list) -> tuple:
                 history.append(set(g.edges()))
                 break
 
-    tour = nx.find_cycle(g)
+    try:
+        tour = nx.find_cycle(g)
+    except nx.exception.NetworkXNoCycle:
+        tour = 'nx.find_cycle(g) error'
     total_weight = sum([g.edges[u, v]['weight'] for (u, v) in g.edges()])
 
     return (g, tour, total_weight, history)
@@ -300,7 +310,7 @@ def nx_christofide(graph: nx.classes.digraph.DiGraph, nodes: list) -> tuple:
         tuple: (solved graph, tour, weight)
     """
     g = nx.Graph()
-    g.add_nodes_from(nodes)
+    g.add_nodes_from([n for n in range(nodes)])
 
     cycle = christofides(graph)
     edge_list = [(*i, graph.edges[i]['weight'])
@@ -308,7 +318,10 @@ def nx_christofide(graph: nx.classes.digraph.DiGraph, nodes: list) -> tuple:
 
     g.add_weighted_edges_from(edge_list)
 
-    tour = nx.find_cycle(g)
+    try:
+        tour = nx.find_cycle(g)
+    except nx.exception.NetworkXNoCycle:
+        tour = 'nx.find_cycle(g) error'
     total_weight = sum([g.edges[u, v]['weight'] for (u, v) in g.edges()])
 
     return (g, tour, total_weight)
@@ -326,14 +339,17 @@ def nx_greedy_tsp(graph: nx.classes.digraph.DiGraph, nodes: list) -> tuple:
         tuple: (solved graph, tour, weight)
     """
     g = nx.Graph()
-    g.add_nodes_from(nodes)
+    g.add_nodes_from([n for n in range(nodes)])
 
     cycle = greedy_tsp(graph)
     edge_list = [(*i, graph.edges[i]['weight'])
                  for i in list(nx.utils.pairwise(cycle))]
     g.add_weighted_edges_from(edge_list)
 
-    tour = nx.find_cycle(g)
+    try:
+        tour = nx.find_cycle(g)
+    except nx.exception.NetworkXNoCycle:
+        tour = 'nx.find_cycle(g) error'
     total_weight = sum([g.edges[u, v]['weight'] for (u, v) in g.edges()])
 
     return (g, tour, total_weight)
@@ -546,7 +562,7 @@ def saveVideo(vdo: str) -> str:
 
     ani = animation.ArtistAnimation(fig, frames, interval=200, blit=True,
                                     repeat_delay=1000)
-    FFwriter = animation.FFMpegWriter(fps=30)
+    FFwriter = animation.FFMpegWriter(fps=5)
     
     
     try:
