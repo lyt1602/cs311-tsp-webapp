@@ -544,7 +544,7 @@ def saveVideo(vdo: str) -> str:
     for i in range(len(files)):
         frames.append([plt.imshow(img[i], animated=True)])
 
-    ani = animation.ArtistAnimation(fig, frames, interval=200, blit=True,
+    ani = animation.FuncAnimation(fig, frames, interval=200, blit=True,
                                     repeat_delay=1000)
     FFwriter = animation.FFMpegWriter(fps=30)
     
