@@ -26,7 +26,7 @@ ENDPOINT = 'https://cs311-tsp-resources.sgp1.digitaloceanspaces.com'
 _RANDOM_SEED = 42
 _GRAPH_TYPE = False
 _MIN_INTV = 1
-_MAX_INTV = 50
+_MAX_INTV = 10
 
 SESSION = boto3.session.Session()
 CLIENT = SESSION.client('s3',
@@ -252,7 +252,7 @@ def NN_2(graph: nx.classes.digraph.DiGraph, nodes: list) -> tuple:
     visited, removed, history = [], [], []
     candidates = sorted({(u, v): graph.edges[u, v]['weight'] for (
         u, v) in graph.edges()}.items(), key=lambda x: x[1])
-
+    
     for ((u, v), w) in candidates:
 
         if ((u, v), w) not in visited:
@@ -277,7 +277,8 @@ def NN_2(graph: nx.classes.digraph.DiGraph, nodes: list) -> tuple:
                 last_u, last_v = last_edge[0], last_edge[1]
                 g.remove_edge(last_u, last_v)
                 history.append(set(g.edges()))
-
+                
+            
             if nx.is_connected(g):
                 u, v = [n for n in g.nodes() if g.degree(n) == 1]
                 g.add_edge(u, v, weight=graph.edges[u, v]['weight'])
@@ -287,7 +288,9 @@ def NN_2(graph: nx.classes.digraph.DiGraph, nodes: list) -> tuple:
     try:
         tour = nx.find_cycle(g)
     except nx.exception.NetworkXNoCycle:
+        saveGraph(g, 'error')
         tour = 'nx.find_cycle(g) error'
+        
     total_weight = sum([g.edges[u, v]['weight'] for (u, v) in g.edges()])
 
     return (g, tour, total_weight, history)
@@ -412,7 +415,11 @@ def saveTour(graph: nx.classes.digraph.DiGraph, tour: list, filename: str) -> st
     fig, ax = plt.subplots()
     ax.axis('off')
     # fig.tight_layout()
-    edge_labels = {(u, v): graph.edges[u, v]['weight'] for (u, v) in tour}
+    try:
+        edge_labels = {(u, v): graph.edges[u, v]['weight'] for (u, v) in tour}
+    except ValueError:
+        # saveGraph(graph, 'error')
+        return 'No cycle Found'
 
     pos = nx.spring_layout(graph)
     pos = nx.circular_layout(graph)
@@ -441,6 +448,8 @@ def saveTour(graph: nx.classes.digraph.DiGraph, tour: list, filename: str) -> st
             })
     except FileNotFoundError:
         return os.path.exists(_IMG_PATH)
+    
+    plt.close()
     
     return f'{ENDPOINT}/images/{filename}.png'
     # return f'{_IMG_PATH}/{filename}.png'

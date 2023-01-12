@@ -35,13 +35,13 @@ def home():
     if request.method == 'POST':
         request_args = list(request.form.to_dict().values())
         
-        try:
-            NODES = int(request_args[0])
-        except:
-            NODES = 1
-
+        if request_args[1] == 'GO':
+            try:
+                NODES = int(request_args[0])
+            except:
+                NODES = 1
+            
         func = request_args[1]
-        
         if func == 'GO':
             G = mypack.getGraph(NODES)
             graph_path = mypack.saveGraph(G, 'mygraph')
