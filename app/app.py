@@ -54,8 +54,9 @@ def home():
             return redirect('/algorithm')
         
         elif func == 'COMPARE':
-            (mst, mst_w) = mypack.getMST(G)
-            mst_path = mypack.saveGraph(mst, 'mst')
+            MST = mypack.getMST(G)
+            if isinstance(MST, tuple):
+                mst_path = mypack.saveGraph(MST[0], 'mst')
             
             for f in ['NN_0', 'NN_1', 'NN_2']:
                 A0, T0, W0, H0 = FUNC[f](G)
@@ -67,14 +68,14 @@ def home():
                     'W': W0,
                     'H': H0,
                     'Solution': mypack.saveTour(G, T0, f),
-                    'Journey': mypack.saveVideo(f'journey_{f}').replace('/app', '') if len(H0) <= MAX_JRNY else None,
+                    'Journey': mypack.saveVideo(f'journey_{f}') if len(H0) <= MAX_JRNY else None,
                     'Tour': ' -> '.join([str(t[0]) for t in T0]) + ' -> 0'
                 }
             
             return render_template('index.html',
                                    graph_path=graph_path,
-                                   mst_path=mst_path,
-                                   mst_w=mst_w,
+                                   mst_path=mst_path if isinstance(MST, tuple) else None,
+                                   mst_w=MST[1] if isinstance(MST, tuple) else None,
                                    models=MODELS)
             
         # else:
