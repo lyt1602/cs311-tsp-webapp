@@ -572,11 +572,13 @@ def saveVideo(vdo: str) -> str:
 
     ani = animation.ArtistAnimation(fig, frames, interval=200, blit=True,
                                     repeat_delay=1000)
-    FFwriter = animation.FFMpegWriter(fps=5)
+    Writer = animation.writers['ffmpeg']
+    writer = Writer(fps=5, bitrate=1800)
+    # FFwriter = animation.FFMpegWriter(fps=5)
     
     
     try:
-        ani.save(f'{_VDO_PATH}/{vdo}.mp4',  writer=FFwriter)
+        ani.save(f'{_VDO_PATH}/{vdo}.mp4',  writer=writer)
         print(os.path.exists(f'{_VDO_PATH}/{vdo}.mp4'), end='\n\n\n')
         with open(f'{_VDO_PATH}/{vdo}.mp4', 'rb') as f:
             CLIENT.upload_fileobj(f, BUCKET_NAME, f'videos/{vdo}.mp4', ExtraArgs={
