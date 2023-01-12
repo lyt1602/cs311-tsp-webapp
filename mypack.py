@@ -130,12 +130,13 @@ def getGraph(nodes: int, edges: int = 0) -> nx.classes.digraph.DiGraph:
     return G
 
 
-def NN_0(graph: nx.classes.digraph.DiGraph) -> tuple:
+def NN_0(graph: nx.classes.digraph.DiGraph, nodes: list) -> tuple:
     """
     Using the simplest solving technique. It will look for immediate closest node
 
     Args:
         graph (nx.classes.digraph.DiGraph): a complete graph
+        nodes (list): list of the nodes
 
     Returns:
         tuple: (solved_graph, tour, weight, history)
@@ -144,7 +145,7 @@ def NN_0(graph: nx.classes.digraph.DiGraph) -> tuple:
     history = []
 
     g = nx.Graph()
-    g.add_nodes_from([i for i in range(len(graph.nodes()))])
+    g.add_nodes_from(nodes)
 
     nodes = [True for _ in range(len(graph.nodes))]
     current = 0
@@ -173,18 +174,19 @@ def NN_0(graph: nx.classes.digraph.DiGraph) -> tuple:
     return (g, tour, total_weight, history)
 
 
-def NN_1(graph: nx.classes.digraph.DiGraph) -> tuple:
+def NN_1(graph: nx.classes.digraph.DiGraph, nodes: list) -> tuple:
     """
     Match any pairs with the least cost. Then match them all up together
 
     Args:
         graph (nx.classes.digraph.DiGraph): a complete graph
+        nodes (list): list of nodes
 
     Returns:
         tuple: (solved graph, tour, weight, history)
     """
     g = nx.Graph()
-    g.add_nodes_from([i for i in range(len(graph.nodes()))])
+    g.add_nodes_from(nodes)
     history = []
 
     nodes = [True for _ in range(len(graph.nodes))]
@@ -226,18 +228,19 @@ def NN_1(graph: nx.classes.digraph.DiGraph) -> tuple:
     return (g, tour, total_weight, history)
 
 
-def NN_2(graph: nx.classes.digraph.DiGraph) -> tuple:
+def NN_2(graph: nx.classes.digraph.DiGraph, nodes: list) -> tuple:
     """
     Match any possible lowest cost that won't make the solved graph closed on itself
 
     Args:
         graph (nx.classes.digraph.DiGraph): a complete graph
+        node (list): list of nodes
 
     Returns:
         tuple: (solved graph, tour, weight, history)
     """
     g = nx.Graph()
-    g.add_nodes_from([i for i in range(len(graph.nodes()))])
+    g.add_nodes_from(nodes)
 
     visited, removed, history = [], [], []
     candidates = sorted({(u, v): graph.edges[u, v]['weight'] for (
@@ -280,7 +283,7 @@ def NN_2(graph: nx.classes.digraph.DiGraph) -> tuple:
     return (g, tour, total_weight, history)
 
 
-def nx_christofide(graph: nx.classes.digraph.DiGraph) -> tuple:
+def nx_christofide(graph: nx.classes.digraph.DiGraph, nodes: list) -> tuple:
     """
     1. find MST T
     2. Isolate set of odd-degree vertices S
@@ -291,12 +294,13 @@ def nx_christofide(graph: nx.classes.digraph.DiGraph) -> tuple:
 
     Args:
         graph (nx.classes.digraph.DiGraph): a complete graph
+        nodes (list): list of nodes
 
     Returns:
         tuple: (solved graph, tour, weight)
     """
     g = nx.Graph()
-    g.add_nodes_from([i for i in range(len(graph.nodes()))])
+    g.add_nodes_from(nodes)
 
     cycle = christofides(graph)
     edge_list = [(*i, graph.edges[i]['weight'])
@@ -310,18 +314,19 @@ def nx_christofide(graph: nx.classes.digraph.DiGraph) -> tuple:
     return (g, tour, total_weight)
 
 
-def nx_greedy_tsp(graph: nx.classes.digraph.DiGraph) -> tuple:
+def nx_greedy_tsp(graph: nx.classes.digraph.DiGraph, nodes: list) -> tuple:
     """
     greedy tsp from nx
 
     Args:
         graph (nx.classes.digraph.DiGraph): a complete graph
+        nodes (list): list of nodes
 
     Returns:
         tuple: (solved graph, tour, weight)
     """
     g = nx.Graph()
-    g.add_nodes_from([i for i in range(len(graph.nodes()))])
+    g.add_nodes_from(nodes)
 
     cycle = greedy_tsp(graph)
     edge_list = [(*i, graph.edges[i]['weight'])
