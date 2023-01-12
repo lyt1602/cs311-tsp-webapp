@@ -83,7 +83,7 @@ def home():
                     'Journey': mypack.saveVideo(f'journey_{f}') if len(H0) <= MAX_JRNY else None,
                     'Tour': ' -> '.join([str(t[0]) for t in T0]) + ' -> 0'
                 }
-                print(MODELS)
+                # print(MODELS)
                 # mypack.()
                 
             return render_template('index.html',

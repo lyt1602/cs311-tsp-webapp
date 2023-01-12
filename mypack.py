@@ -576,13 +576,13 @@ def saveVideo(vdo: str) -> str:
     
     try:
         ani.save(f'{_VDO_PATH}/{vdo}.mp4',  writer=FFwriter)
-        print(os.path.exists(f'{_VDO_PATH}/{vdo}.mp4'))
+        print(os.path.exists(f'{_VDO_PATH}/{vdo}.mp4'), end='\n\n\n')
         with open(f'{_VDO_PATH}/{vdo}.mp4', 'rb') as f:
             CLIENT.upload_fileobj(f, BUCKET_NAME, f'videos/{vdo}.mp4', ExtraArgs={
                 'ACL': 'public-read'
             })
-    except FileNotFoundError or botocore.exceptions.ClientError or ValueError:
-        return os.listdir(_VDO_PATH)
+    except FileNotFoundError or botocore.exceptions.ClientError or ValueError as e:
+        return e
     
     for f in glob.glob(f'{_IMG_PATH}/f*'):
         os.remove(f)
