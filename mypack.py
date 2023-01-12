@@ -576,6 +576,7 @@ def saveVideo(vdo: str) -> str:
     
     try:
         ani.save(f'{_VDO_PATH}/{vdo}.mp4',  writer=FFwriter)
+        print(os.path.exists(f'{_VDO_PATH}/{vdo}.mp4'))
         with open(f'{_VDO_PATH}/{vdo}.mp4', 'rb') as f:
             CLIENT.upload_fileobj(f, BUCKET_NAME, f'videos/{vdo}.mp4', ExtraArgs={
                 'ACL': 'public-read'

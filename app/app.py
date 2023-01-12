@@ -65,7 +65,7 @@ def home():
                 try:
                     NODES = len(list(G.nodes())) if NODES == None else NODES
                 except AttributeError:
-                    print(NODES)
+                    print('err', NODES)
                 A0, T0, W0, H0 = FUNC[f](G, NODES)
                 if len(H0) <= MAX_JRNY:
                     mypack.getJourneyFrames(G, H0)
@@ -78,7 +78,7 @@ def home():
                     'Journey': mypack.saveVideo(f'journey_{f}') if len(H0) <= MAX_JRNY else None,
                     'Tour': ' -> '.join([str(t[0]) for t in T0]) + ' -> 0'
                 }
-            
+                print(MODELS)
             return render_template('index.html',
                                    graph_path=graph_path,
                                    mst_path=mst_path if isinstance(MST, tuple) else None,
