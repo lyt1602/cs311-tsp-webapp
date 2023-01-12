@@ -541,7 +541,7 @@ def saveVideo(vdo: str) -> str:
 
     ani = animation.ArtistAnimation(fig, frames, interval=200, blit=True,
                                     repeat_delay=1000)
-    ani.save(f'{_VDO_PATH}/{vdo}.mp4')
+    ani.save(f'{_VDO_PATH}/{vdo}.mp4',  writer='ffmpeg')
     
     try:
         with open(f'{_VDO_PATH}/{vdo}.mp4', 'rb') as f:
