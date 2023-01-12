@@ -1,0 +1,11 @@
+{% extends 'base.html' %} {% block head %} {% if title %}
+<title>CS311 TSP - {{ title }}</title>
+{% else %}
+<title>CS311 TSP</title>
+{% endif %} {% endblock %} {% block body %}
+<body class="w-screen h-screen">
+	{% from '_mymacros.html' import NavComponent, SidebarComponent %} {{
+	NavComponent() }}
+	<section class="flex w-full h-full"></section>
+</body>
+{% endblock %}

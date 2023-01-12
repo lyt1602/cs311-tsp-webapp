@@ -1,0 +1,102 @@
+{% extends 'base.html' %} {% block head %} {% if title %}
+
+<title>CS311 TSP - {{ title }}</title>
+
+{% else %}
+
+<title>CS311 TSP</title>
+
+{% endif %} {% endblock %} {% block body %}
+<body class="w-screen h-screen overflow-hidden">
+	{% from '_mymacros.html' import NavComponent, SidebarComponent %} {{
+	NavComponent() }}
+	<section class="flex w-screen h-screen overflow-hidden">
+		<div class="w-full overflow-y-scroll px-20 pt-20 pb-28">
+			<h1 class="text-3xl font-bold my-4">Your Graph</h1>
+			{% if graph_path %}
+            {{ graph_path }}
+			<div class="w-full flex justify-center my-4">
+				<img
+					class="border"
+					src="{{ graph_path }}"
+					alt="graph_path" />
+			</div>
+			{% endif%} {% if algo %}
+			<h1 class="text-3xl font-bold my-4">Solution - {{ algo }}</h1>
+			{% endif %}
+			<div class="w-full flex justify-center my-4">
+				{% if solution_path %}
+				<img
+					class="border"
+					src="{{ solution_path }}"
+					alt="solution_path" />
+				{% endif %} {% if tour_path %}
+				<video
+					class="border"
+					autoplay="autoplay"
+					controls="controls"
+					preload="preload"
+					loop>
+					<source
+						src="{{ tour_path }}"
+						type="video/mp4" />
+				</video>
+				{% endif %}
+			</div>
+			{% if tour %}
+			<h2 class="text-2xl font-bold my-4">Tour: {{ tour }}</h2>
+			{% endif %} {% if journey_path %}
+			<h2 class="text-2xl font-bold my-4">
+				How the tour was discovered using {{ algo }}
+			</h2>
+			<div class="w-full flex justify-center my-4">
+				<video
+					class="border"
+					autoplay="autoplay"
+					controls="controls"
+					preload="preload"
+					loop>
+					<source
+						src="{{ journey_path }}"
+						type="video/mp4" />
+				</video>
+			</div>
+			{% endif %} {% if mst_path %}
+			<h1 class="text-3xl font-bold my-4">Compare</h1>
+			<h2 class="text-2xl font-bold my-4">
+				Lower Bound (MST) - {{ mst_w }}
+			</h2>
+			<div class="w-full flex justify-center my-4">
+				<img
+					class="border"
+					src="{{ mst_path }}"
+					alt="mst_path" />
+			</div>
+			{% endif %} {% if models %} {% for model, result in
+			models.items() %}
+			<h2 class="text-2xl font-bold my-4">Using {{ model }}</h2>
+			<div class="w-full flex justify-center my-4">
+				<img
+					class="border"
+					src="{{ result['Solution'] }}"
+					alt="nn0_path" />
+				{% if result['Journey'] != None %}
+				<video
+					class="border"
+					autoplay="autoplay"
+					controls="controls"
+					preload="preload"
+					loop>
+					<source
+						src="{{ result['Journey'] }}"
+						type="video/mp4" />
+				</video>
+				{% endif %}
+			</div>
+			<h2 class="text-2xl font-bold my-4">Tour: {{ result['Tour'] }}</h2>
+			{% endfor %} {% endif %}
+		</div>
+		<div>{{ SidebarComponent() }}</div>
+	</section>
+</body>
+{% endblock %}
