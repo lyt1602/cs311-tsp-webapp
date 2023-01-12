@@ -581,7 +581,7 @@ def saveVideo(vdo: str) -> str:
                 'ACL': 'public-read'
             })
     except FileNotFoundError or botocore.exceptions.ClientError or ValueError:
-        return os.path.exists(_VDO_PATH)
+        return os.listdir(_VDO_PATH)
     
     for f in glob.glob(f'{_IMG_PATH}/f*'):
         os.remove(f)

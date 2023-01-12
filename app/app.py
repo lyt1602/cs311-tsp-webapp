@@ -31,6 +31,7 @@ FUNC = {
 @app.route('/', methods=['GET', 'POST'])
 def home():
     global G, NODES, FUNC, MODELS, A, W, T, H, graph_path, solution_path, journey_path, tour_path, mst_path
+    print(NODES)
 
     if request.method == 'POST':
         request_args = list(request.form.to_dict().values())
@@ -111,6 +112,7 @@ def home():
         #                            journey_path=journey_path,
         #                            tour_path=tour_path)
     NODES = mypack.random.randint(MIN_NODE, MAX_NODE)
+    print(NODES)
     G = mypack.getGraph(NODES)
     graph_path = mypack.saveGraph(G, 'mygraph')
     return render_template('index.html', graph_path=graph_path)
