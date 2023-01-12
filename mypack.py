@@ -550,7 +550,7 @@ def saveVideo(vdo: str) -> str:
     Args:
         vdo (str): the name of the video
     """
-    plt.rcParams['animation.ffmpeg_path'] = './env/lib/python3.10/site-packages/ffmpeg'
+    # plt.rcParams['animation.ffmpeg_path'] = './env/lib/python3.10/site-packages/ffmpeg'
     fig = plt.figure("Animation")
     plt.clf()
 
