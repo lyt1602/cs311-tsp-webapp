@@ -356,7 +356,6 @@ def saveGraph(graph: nx.classes.digraph.DiGraph, filename: str, txt: str = '') -
     try:
         plt.savefig(f'{_IMG_PATH}/{filename}.png')
         with open(f'{_IMG_PATH}/{filename}.png', 'rb') as f:
-            CLIENT.delete_object(Bucket=BUCKET_NAME, Key=f'images/{filename}.png')
             CLIENT.upload_fileobj(f, BUCKET_NAME, f'images/{filename}.png', ExtraArgs={
                 'ACL': 'public-read'
             })
@@ -413,7 +412,6 @@ def saveTour(graph: nx.classes.digraph.DiGraph, tour: list, filename: str) -> st
     try:
         plt.savefig(f'{_IMG_PATH}/{filename}.png')
         with open(f'{_IMG_PATH}/{filename}.png', 'rb') as f:
-            CLIENT.delete_object(Bucket=BUCKET_NAME, Key=f'images/{filename}.png')
             CLIENT.upload_fileobj(f, BUCKET_NAME, f'images/{filename}.png', ExtraArgs={
                 'ACL': 'public-read'
             })
@@ -541,8 +539,19 @@ def saveVideo(vdo: str) -> str:
     ani = animation.ArtistAnimation(fig, frames, interval=200, blit=True,
                                     repeat_delay=1000)
     ani.save(f'{_VDO_PATH}/{vdo}.mp4')
-
+    
+    try:
+        with open(f'{_VDO_PATH}/{vdo}.mp4', 'rb') as f:
+            CLIENT.upload_fileobj(f, BUCKET_NAME, f'videos/{vdo}.mp4', ExtraArgs={
+                'ACL': 'public-read'
+            })
+    except FileNotFoundError:
+        return os.path.exists(_VDO_PATH)
+    
     for f in glob.glob(f'{_IMG_PATH}/f*'):
         os.remove(f)
+        
+    return f'{ENDPOINT}/videos/{vdo}.mp4'
 
-    return f'{_VDO_PATH}/{vdo}.mp4'
+
+    # return f'{_VDO_PATH}/{vdo}.mp4'
