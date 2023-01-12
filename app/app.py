@@ -28,6 +28,10 @@ FUNC = {
     'NX_GREEDY': mypack.nx_greedy_tsp
 }
 
+@app.before_first_request
+def clear_media():
+    mypack.clearDir()
+    
 @app.route('/', methods=['GET', 'POST'])
 def home():
     global G, NODES, FUNC, MODELS, A, W, T, H, graph_path, solution_path, journey_path, tour_path, mst_path
@@ -42,6 +46,7 @@ def home():
             except:
                 NODES = 1
             print('new', NODES)
+        print('cd', NODES)
             
         func = request_args[1]
         if func == 'GO':
@@ -79,6 +84,8 @@ def home():
                     'Tour': ' -> '.join([str(t[0]) for t in T0]) + ' -> 0'
                 }
                 print(MODELS)
+                # mypack.()
+                
             return render_template('index.html',
                                    graph_path=graph_path,
                                    mst_path=mst_path if isinstance(MST, tuple) else None,
