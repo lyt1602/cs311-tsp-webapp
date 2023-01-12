@@ -144,7 +144,7 @@ def NN_0(graph: nx.classes.digraph.DiGraph) -> tuple:
     history = []
 
     g = nx.Graph()
-    g.add_nodes_from(graph.nodes())
+    g.add_nodes_from([i for i in range(len(graph.nodes()))])
 
     nodes = [True for _ in range(len(graph.nodes))]
     current = 0
@@ -184,7 +184,7 @@ def NN_1(graph: nx.classes.digraph.DiGraph) -> tuple:
         tuple: (solved graph, tour, weight, history)
     """
     g = nx.Graph()
-    g.add_nodes_from(graph.nodes())
+    g.add_nodes_from([i for i in range(len(graph.nodes()))])
     history = []
 
     nodes = [True for _ in range(len(graph.nodes))]
@@ -237,7 +237,7 @@ def NN_2(graph: nx.classes.digraph.DiGraph) -> tuple:
         tuple: (solved graph, tour, weight, history)
     """
     g = nx.Graph()
-    g.add_nodes_from(graph.nodes())
+    g.add_nodes_from([i for i in range(len(graph.nodes()))])
 
     visited, removed, history = [], [], []
     candidates = sorted({(u, v): graph.edges[u, v]['weight'] for (
@@ -296,7 +296,7 @@ def nx_christofide(graph: nx.classes.digraph.DiGraph) -> tuple:
         tuple: (solved graph, tour, weight)
     """
     g = nx.Graph()
-    g.add_nodes_from(graph.nodes())
+    g.add_nodes_from([i for i in range(len(graph.nodes()))])
 
     cycle = christofides(graph)
     edge_list = [(*i, graph.edges[i]['weight'])
@@ -321,7 +321,7 @@ def nx_greedy_tsp(graph: nx.classes.digraph.DiGraph) -> tuple:
         tuple: (solved graph, tour, weight)
     """
     g = nx.Graph()
-    g.add_nodes_from(graph.nodes())
+    g.add_nodes_from([i for i in range(len(graph.nodes()))])
 
     cycle = greedy_tsp(graph)
     edge_list = [(*i, graph.edges[i]['weight'])
