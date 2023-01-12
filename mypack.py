@@ -544,18 +544,18 @@ def saveVideo(vdo: str) -> str:
     for i in range(len(files)):
         frames.append([plt.imshow(img[i], animated=True)])
 
-    ani = animation.FuncAnimation(fig, frames, interval=200, blit=True,
+    ani = animation.ArtistAnimation(fig, frames, interval=200, blit=True,
                                     repeat_delay=1000)
     FFwriter = animation.FFMpegWriter(fps=30)
     
-    ani.save(f'{_VDO_PATH}/{vdo}.mp4',  writer=FFwriter)
     
     try:
+        ani.save(f'{_VDO_PATH}/{vdo}.mp4',  writer=FFwriter)
         with open(f'{_VDO_PATH}/{vdo}.mp4', 'rb') as f:
             CLIENT.upload_fileobj(f, BUCKET_NAME, f'videos/{vdo}.mp4', ExtraArgs={
                 'ACL': 'public-read'
             })
-    except FileNotFoundError or botocore.exceptions.ClientError:
+    except FileNotFoundError or botocore.exceptions.ClientError or ValueError:
         return os.path.exists(_VDO_PATH)
     
     for f in glob.glob(f'{_IMG_PATH}/f*'):
