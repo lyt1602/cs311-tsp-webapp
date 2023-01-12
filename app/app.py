@@ -59,10 +59,11 @@ def home():
                 mst_path = mypack.saveGraph(MST[0], 'mst')
             
             for f in ['NN_0', 'NN_1', 'NN_2']:
-                try:
-                    NODES = len(list(G.nodes())) if NODES == None else NODES
-                except AttributeError:
-                    print(NODES)
+                print(NODES)
+                # try:
+                    # NODES = len(list(G.nodes())) if NODES == None else NODES
+                # except AttributeError:
+                    # print(NODES)
                 A0, T0, W0, H0 = FUNC[f](G, NODES)
                 if len(H0) <= MAX_JRNY:
                     mypack.getJourneyFrames(G, H0)
