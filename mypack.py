@@ -582,8 +582,12 @@ def saveVideo(vdo: str) -> str:
             CLIENT.upload_fileobj(f, BUCKET_NAME, f'videos/{vdo}.mp4', ExtraArgs={
                 'ACL': 'public-read'
             })
-    except FileNotFoundError or botocore.exceptions.ClientError or ValueError as e:
-        return e
+    except FileNotFoundError as e:
+        print(e)
+    except botocore.exceptions.ClientError as e:
+        print(e)
+    except ValueError as e:
+        print(e)
     
     for f in glob.glob(f'{_IMG_PATH}/f*'):
         os.remove(f)
