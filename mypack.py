@@ -141,41 +141,45 @@ def NN_0(graph: nx.classes.digraph.DiGraph, nodes: list) -> tuple:
     Returns:
         tuple: (solved_graph, tour, weight, history)
     """
+    try:
+            
+        history = []
 
-    history = []
+        g = nx.Graph()
+        g.add_nodes_from([n for n in range(nodes)])
 
-    g = nx.Graph()
-    g.add_nodes_from([n for n in range(nodes)])
+        nodes = [True for _ in range(nodes)]
+        current = 0
+        nodes[current] = False
 
-    nodes = [True for _ in range(nodes)]
-    current = 0
-    nodes[current] = False
+        while True in nodes:
 
-    while True in nodes:
+            candidates = {i: graph.edges[current, i]['weight'] for i in range(
+                len(nodes)) if nodes[i] and current in graph.neighbors(i)}
 
-        candidates = {i: graph.edges[current, i]['weight'] for i in range(
-            len(nodes)) if nodes[i] and current in graph.neighbors(i)}
+            closest_candidate = min(candidates, key=candidates.get)
+            g.add_edge(current, closest_candidate,
+                    weight=candidates[closest_candidate])
 
-        closest_candidate = min(candidates, key=candidates.get)
-        g.add_edge(current, closest_candidate,
-                   weight=candidates[closest_candidate])
+            nodes[closest_candidate] = False
+            current = closest_candidate
 
-        nodes[closest_candidate] = False
-        current = closest_candidate
+            history.append(set(g.edges()))
 
+        g.add_edge(current, 0, weight=graph.edges[current, 0]['weight'])
         history.append(set(g.edges()))
 
-    g.add_edge(current, 0, weight=graph.edges[current, 0]['weight'])
-    history.append(set(g.edges()))
+        try:
+            tour = nx.find_cycle(g)
+        except nx.exception.NetworkXNoCycle:
+            tour = 'nx.find_cycle(g) error'
+            
+        total_weight = sum([g.edges[u, v]['weight'] for (u, v) in g.edges()])
 
-    try:
-        tour = nx.find_cycle(g)
-    except nx.exception.NetworkXNoCycle:
-        tour = 'nx.find_cycle(g) error'
+        return (g, tour, total_weight, history)
+    except BaseException as e:
+        print(e)
         
-    total_weight = sum([g.edges[u, v]['weight'] for (u, v) in g.edges()])
-
-    return (g, tour, total_weight, history)
 
 
 def NN_1(graph: nx.classes.digraph.DiGraph, nodes: list) -> tuple:
@@ -189,51 +193,53 @@ def NN_1(graph: nx.classes.digraph.DiGraph, nodes: list) -> tuple:
     Returns:
         tuple: (solved graph, tour, weight, history)
     """
-    g = nx.Graph()
-    g.add_nodes_from([n for n in range(nodes)])
-    history = []
-
-    nodes = [True for _ in range(nodes)]
-
-    candidates = sorted({(u, v): graph.edges[u, v]['weight'] for (
-        u, v) in graph.edges()}.items(), key=lambda x: x[1])
-
-    # match any nodes that have the least cost
-    for ((u, v), w) in candidates:
-        if nodes[u] and nodes[v]:
-            g.add_edge(u, v, weight=w)
-            nodes[u], nodes[v] = False, False
-            history.append(set(g.edges()))
-
-    # for odd leftover node
-    if True in nodes:
-        u = nodes.index(True)
-        candidates = {n: graph.edges[u, n]['weight']
-                      for n in [v for v in graph.neighbors(u)]}
-        min_v = min(candidates, key=candidates.get)
-        g.add_edge(u, min_v, weight=candidates[min_v])
-        history.append(set(g.edges()))
-
-    # connects all sections
-    partial = [p for p in nx.connected_components(g)]
-    avail_nodes = [[n for n in p if g.degree(n) < 2] for p in partial]
-    nodes = [True for _ in range(max(sum(avail_nodes, []))+1)]
-    potential_candidates = sorted({(u, v): graph.edges[u, v]['weight'] for (
-        u, v) in pairs(*avail_nodes)}.items(), key=lambda x: x[1])
-    for ((u, v), w) in potential_candidates:
-        if nodes[u] and nodes[v]:
-            g.add_edge(u, v, weight=w)
-            nodes[u], nodes[v] = False, False
-            history.append(set(g.edges()))
-
     try:
-        tour = nx.find_cycle(g)
-    except nx.exception.NetworkXNoCycle:
-        tour = 'nx.find_cycle(g) error'
-    total_weight = sum([g.edges[u, v]['weight'] for (u, v) in g.edges()])
+        g = nx.Graph()
+        g.add_nodes_from([n for n in range(nodes)])
+        history = []
 
-    return (g, tour, total_weight, history)
+        nodes = [True for _ in range(nodes)]
 
+        candidates = sorted({(u, v): graph.edges[u, v]['weight'] for (
+            u, v) in graph.edges()}.items(), key=lambda x: x[1])
+
+        # match any nodes that have the least cost
+        for ((u, v), w) in candidates:
+            if nodes[u] and nodes[v]:
+                g.add_edge(u, v, weight=w)
+                nodes[u], nodes[v] = False, False
+                history.append(set(g.edges()))
+
+        # for odd leftover node
+        if True in nodes:
+            u = nodes.index(True)
+            candidates = {n: graph.edges[u, n]['weight']
+                        for n in [v for v in graph.neighbors(u)]}
+            min_v = min(candidates, key=candidates.get)
+            g.add_edge(u, min_v, weight=candidates[min_v])
+            history.append(set(g.edges()))
+
+        # connects all sections
+        partial = [p for p in nx.connected_components(g)]
+        avail_nodes = [[n for n in p if g.degree(n) < 2] for p in partial]
+        nodes = [True for _ in range(max(sum(avail_nodes, []))+1)]
+        potential_candidates = sorted({(u, v): graph.edges[u, v]['weight'] for (
+            u, v) in pairs(*avail_nodes)}.items(), key=lambda x: x[1])
+        for ((u, v), w) in potential_candidates:
+            if nodes[u] and nodes[v]:
+                g.add_edge(u, v, weight=w)
+                nodes[u], nodes[v] = False, False
+                history.append(set(g.edges()))
+
+        try:
+            tour = nx.find_cycle(g)
+        except nx.exception.NetworkXNoCycle:
+            tour = 'nx.find_cycle(g) error'
+        total_weight = sum([g.edges[u, v]['weight'] for (u, v) in g.edges()])
+
+        return (g, tour, total_weight, history)
+    except BaseException as e:
+        print(e)
 
 def NN_2(graph: nx.classes.digraph.DiGraph, nodes: list) -> tuple:
     """
@@ -246,54 +252,57 @@ def NN_2(graph: nx.classes.digraph.DiGraph, nodes: list) -> tuple:
     Returns:
         tuple: (solved graph, tour, weight, history)
     """
-    g = nx.Graph()
-    g.add_nodes_from([n for n in range(nodes)])
-
-    visited, removed, history = [], [], []
-    candidates = sorted({(u, v): graph.edges[u, v]['weight'] for (
-        u, v) in graph.edges()}.items(), key=lambda x: x[1])
-    
-    for ((u, v), w) in candidates:
-
-        if ((u, v), w) not in visited:
-            g.add_edge(u, v, weight=w)
-            visited.append(((u, v), w))
-            history.append(set(g.edges()))
-
-            rm_flag = True if g.degree(u) > 2 or g.degree(v) > 2 else False
-            partial = [p for p in nx.connected_components(g)]
-
-            if len(partial) > 1:
-                for p in partial:
-                    if len(p) > 2:
-                        sub_g = g.subgraph(p).copy()
-                        if len(nx.cycle_basis(sub_g)) != 0:
-                            # print('raise',nx.cycle_basis(p))
-                            rm_flag = True
-
-            if rm_flag:
-                removed.append(visited[-1])
-                last_edge = visited[-1][0]
-                last_u, last_v = last_edge[0], last_edge[1]
-                g.remove_edge(last_u, last_v)
-                history.append(set(g.edges()))
-                
-            
-            if nx.is_connected(g):
-                u, v = [n for n in g.nodes() if g.degree(n) == 1]
-                g.add_edge(u, v, weight=graph.edges[u, v]['weight'])
-                history.append(set(g.edges()))
-                break
-
     try:
-        tour = nx.find_cycle(g)
-    except nx.exception.NetworkXNoCycle:
-        saveGraph(g, 'error')
-        tour = 'nx.find_cycle(g) error'
-        
-    total_weight = sum([g.edges[u, v]['weight'] for (u, v) in g.edges()])
+        g = nx.Graph()
+        g.add_nodes_from([n for n in range(nodes)])
 
-    return (g, tour, total_weight, history)
+        visited, removed, history = [], [], []
+        candidates = sorted({(u, v): graph.edges[u, v]['weight'] for (
+            u, v) in graph.edges()}.items(), key=lambda x: x[1])
+        
+        for ((u, v), w) in candidates:
+
+            if ((u, v), w) not in visited:
+                g.add_edge(u, v, weight=w)
+                visited.append(((u, v), w))
+                history.append(set(g.edges()))
+
+                rm_flag = True if g.degree(u) > 2 or g.degree(v) > 2 else False
+                partial = [p for p in nx.connected_components(g)]
+
+                if len(partial) > 1:
+                    for p in partial:
+                        if len(p) > 2:
+                            sub_g = g.subgraph(p).copy()
+                            if len(nx.cycle_basis(sub_g)) != 0:
+                                # print('raise',nx.cycle_basis(p))
+                                rm_flag = True
+
+                if rm_flag:
+                    removed.append(visited[-1])
+                    last_edge = visited[-1][0]
+                    last_u, last_v = last_edge[0], last_edge[1]
+                    g.remove_edge(last_u, last_v)
+                    history.append(set(g.edges()))
+                    
+                
+                if nx.is_connected(g):
+                    u, v = [n for n in g.nodes() if g.degree(n) == 1]
+                    g.add_edge(u, v, weight=graph.edges[u, v]['weight'])
+                    history.append(set(g.edges()))
+                    break
+
+        try:
+            tour = nx.find_cycle(g)
+        except nx.exception.NetworkXNoCycle:
+            saveGraph(g, 'error')
+            tour = 'nx.find_cycle(g) error'
+            
+        total_weight = sum([g.edges[u, v]['weight'] for (u, v) in g.edges()])
+
+        return (g, tour, total_weight, history)
+    except BaseException as e:
+        print(e)
 
 
 def nx_christofide(graph: nx.classes.digraph.DiGraph, nodes: list) -> tuple:
@@ -312,22 +321,25 @@ def nx_christofide(graph: nx.classes.digraph.DiGraph, nodes: list) -> tuple:
     Returns:
         tuple: (solved graph, tour, weight)
     """
-    g = nx.Graph()
-    g.add_nodes_from([n for n in range(nodes)])
-
-    cycle = christofides(graph)
-    edge_list = [(*i, graph.edges[i]['weight'])
-                 for i in list(nx.utils.pairwise(cycle))]
-
-    g.add_weighted_edges_from(edge_list)
-
     try:
-        tour = nx.find_cycle(g)
-    except nx.exception.NetworkXNoCycle:
-        tour = 'nx.find_cycle(g) error'
-    total_weight = sum([g.edges[u, v]['weight'] for (u, v) in g.edges()])
+        g = nx.Graph()
+        g.add_nodes_from([n for n in range(nodes)])
 
-    return (g, tour, total_weight)
+        cycle = christofides(graph)
+        edge_list = [(*i, graph.edges[i]['weight'])
+                    for i in list(nx.utils.pairwise(cycle))]
+
+        g.add_weighted_edges_from(edge_list)
+
+        try:
+            tour = nx.find_cycle(g)
+        except nx.exception.NetworkXNoCycle:
+            tour = 'nx.find_cycle(g) error'
+        total_weight = sum([g.edges[u, v]['weight'] for (u, v) in g.edges()])
+
+        return (g, tour, total_weight)
+    except BaseException as e:
+        print(e)
 
 
 def nx_greedy_tsp(graph: nx.classes.digraph.DiGraph, nodes: list) -> tuple:
@@ -341,21 +353,24 @@ def nx_greedy_tsp(graph: nx.classes.digraph.DiGraph, nodes: list) -> tuple:
     Returns:
         tuple: (solved graph, tour, weight)
     """
-    g = nx.Graph()
-    g.add_nodes_from([n for n in range(nodes)])
-
-    cycle = greedy_tsp(graph)
-    edge_list = [(*i, graph.edges[i]['weight'])
-                 for i in list(nx.utils.pairwise(cycle))]
-    g.add_weighted_edges_from(edge_list)
-
     try:
-        tour = nx.find_cycle(g)
-    except nx.exception.NetworkXNoCycle:
-        tour = 'nx.find_cycle(g) error'
-    total_weight = sum([g.edges[u, v]['weight'] for (u, v) in g.edges()])
+        g = nx.Graph()
+        g.add_nodes_from([n for n in range(nodes)])
 
-    return (g, tour, total_weight)
+        cycle = greedy_tsp(graph)
+        edge_list = [(*i, graph.edges[i]['weight'])
+                    for i in list(nx.utils.pairwise(cycle))]
+        g.add_weighted_edges_from(edge_list)
+
+        try:
+            tour = nx.find_cycle(g)
+        except nx.exception.NetworkXNoCycle:
+            tour = 'nx.find_cycle(g) error'
+        total_weight = sum([g.edges[u, v]['weight'] for (u, v) in g.edges()])
+
+        return (g, tour, total_weight)
+    except BaseException as e:
+        print(e)
 
 
 def saveGraph(graph: nx.classes.digraph.DiGraph, filename: str, txt: str = '') -> bool:
