@@ -147,7 +147,7 @@ def NN_0(graph: nx.classes.digraph.DiGraph, nodes: list) -> tuple:
     g = nx.Graph()
     g.add_nodes_from([n for n in range(nodes)])
 
-    nodes = [True for _ in range(len(graph.nodes))]
+    nodes = [True for _ in range(nodes)]
     current = 0
     nodes[current] = False
 
@@ -193,7 +193,7 @@ def NN_1(graph: nx.classes.digraph.DiGraph, nodes: list) -> tuple:
     g.add_nodes_from([n for n in range(nodes)])
     history = []
 
-    nodes = [True for _ in range(len(graph.nodes))]
+    nodes = [True for _ in range(nodes)]
 
     candidates = sorted({(u, v): graph.edges[u, v]['weight'] for (
         u, v) in graph.edges()}.items(), key=lambda x: x[1])
