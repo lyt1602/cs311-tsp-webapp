@@ -46,90 +46,99 @@ def home():
             except:
                 NODES = 5
             print('new', NODES)
+            
+            G = mypack.getGraph(NODES)
+            graph_path = mypack.saveGraph(G, 'mygraph')
+            return render_template('index.html', graph_path=graph_path)
+        
         elif request_args[1] in ['NN_0', 'NN_1', 'NN_2', 'NX_CHRISTOFIDE', 'NX_GREEDY', 'COMPARE']:
             try:
                 temp = int(request_args[0])
             except:
                 temp = 0
+                
             if temp > 0:
                 NODES = temp
-            print('new', NODES)
+                G = mypack.getGraph(NODES)
+                graph_path = mypack.saveGraph(G, 'mygraph')
+                print('new', NODES)
+                
         print('cd', NODES)
+        print('G', G)
             
         func = request_args[1]
-        if func == 'GO':
-            G = mypack.getGraph(NODES)
-            graph_path = mypack.saveGraph(G, 'mygraph')
-            return render_template('index.html', graph_path=graph_path)
+        # if func == 'GO':
+        #     G = mypack.getGraph(NODES)
+        #     graph_path = mypack.saveGraph(G, 'mygraph')
+        #     return render_template('index.html', graph_path=graph_path)
         
-        elif func == 'REPORT':
+        if func == 'REPORT':
             return redirect('/report')
         
         elif func == 'ALGO':
             return redirect('/algorithm')
         
-        elif func == 'COMPARE':
-            MST = mypack.getMST(G)
-            if isinstance(MST, tuple):
-                mst_path = mypack.saveGraph(MST[0], 'mst')
+        # elif func == 'COMPARE':
+        #     MST = mypack.getMST(G)
+        #     if isinstance(MST, tuple):
+        #         mst_path = mypack.saveGraph(MST[0], 'mst')
             
-            for f in ['NN_0', 'NN_1', 'NN_2']:
-                print('in', NODES)
-                print('in', G)
-                if G == None:
-                    G = mypack.getGraph(NODES)
-                try:
-                    NODES = len(list(G.nodes())) if NODES == None else NODES
-                except AttributeError:
-                    print('err', NODES)
-                A0, T0, W0, H0 = FUNC[f](G, NODES)
-                if len(H0) <= MAX_JRNY:
-                    mypack.getJourneyFrames(G, H0)
-                MODELS[f] = {
-                    'A': A0,
-                    'T': T0,
-                    'W': W0,
-                    'H': H0,
-                    'Solution': mypack.saveTour(G, T0, f),
-                    'Journey': mypack.saveVideo(f'journey_{f}') if len(H0) <= MAX_JRNY else None,
-                    'Tour': ' -> '.join([str(t[0]) for t in T0]) + ' -> 0'
-                }
-                # print(MODELS)
-                # mypack.()
+        #     for f in ['NN_0', 'NN_1', 'NN_2']:
+        #         print('in', NODES)
+        #         print('in', G)
+        #         if G == None:
+        #             G = mypack.getGraph(NODES)
+        #         try:
+        #             NODES = len(list(G.nodes())) if NODES == None else NODES
+        #         except AttributeError:
+        #             print('err', NODES)
+        #         print(FUNC[f](G, NODES))
+        #         A0, T0, W0, H0 = FUNC[f](G, NODES)
+        #         if len(H0) <= MAX_JRNY:
+        #             mypack.getJourneyFrames(G, H0)
+        #         MODELS[f] = {
+        #             'A': A0,
+        #             'T': T0,
+        #             'W': W0,
+        #             'H': H0,
+        #             'Solution': mypack.saveTour(G, T0, f),
+        #             'Journey': mypack.saveVideo(f'journey_{f}') if len(H0) <= MAX_JRNY else None,
+        #             'Tour': ' -> '.join([str(t[0]) for t in T0]) + ' -> 0'
+        #         }
+        #         # print(MODELS)
+        #         # mypack.()
                 
-            return render_template('index.html',
-                                   graph_path=graph_path,
-                                   mst_path=mst_path if isinstance(MST, tuple) else None,
-                                   mst_w=MST[1] if isinstance(MST, tuple) else None,
-                                   models=MODELS)
-            
-        # else:
-        #     if func in ['NN_0', 'NN_1', 'NN_2']:
-        #         A, T, W, H = FUNC[func](G, NODES)
-        #     else:
-        #         A, T, W = FUNC[func](G, NODES)
-        #         H = None
-        #     solution_path = mypack.saveTour(G, T, 'solution').replace('/app', '')
-        #     mypack.getPathFrames(G, T)
-        #     # tour_path = mypack.saveVideo('tour').replace('/app', '')
-        #     tour_path = None
-            
-        #     if H != None and len(H) <= MAX_JRNY:
-        #         mypack.getJourneyFrames(G, H)
-        #         journey_path = None
-        #         # journey_path = mypack.saveVideo('journey').replace('/app', '')
-        #         # mypack.getPathFrames(G, T)
-        #     else:
-        #         journey_path = None
-            
         #     return render_template('index.html',
         #                            graph_path=graph_path,
-        #                            solution_path=solution_path,
-        #                            algo=func,
-        #                            tour=' -> '.join([str(t[0])
-        #                                             for t in T]) + ' -> 0',
-        #                            journey_path=journey_path,
-        #                            tour_path=tour_path)
+        #                            mst_path=mst_path if isinstance(MST, tuple) else None,
+        #                            mst_w=MST[1] if isinstance(MST, tuple) else None,
+        #                            models=MODELS)
+            
+        else:
+            print(FUNC[func])
+            if func in ['NN_0', 'NN_1', 'NN_2']:
+                A, T, W, H = FUNC[func](G, NODES)
+            else:
+                A, T, W = FUNC[func](G, NODES)
+                H = None
+            solution_path = mypack.saveTour(G, T, 'solution')
+            mypack.getPathFrames(G, T)
+            tour_path = mypack.saveVideo('tour')
+            
+            if H != None and len(H) <= MAX_JRNY:
+                mypack.getJourneyFrames(G, H)
+                journey_path = mypack.saveVideo('journey')
+            else:
+                journey_path = None
+            
+            return render_template('index.html',
+                                   graph_path=graph_path,
+                                   solution_path=solution_path,
+                                   algo=func,
+                                   tour=' -> '.join([str(t[0])
+                                                    for t in T]) + ' -> 0',
+                                   journey_path=journey_path,
+                                   tour_path=tour_path)
     NODES = mypack.random.randint(MIN_NODE, MAX_NODE)
     print('rand', NODES)
     G = mypack.getGraph(NODES)
