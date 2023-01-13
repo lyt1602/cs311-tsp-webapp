@@ -71,26 +71,39 @@
 					src="{{ mst_path }}"
 					alt="mst_path" />
 			</div>
-			{% endif %} {% if models %} {% for model, result in
-			models.items() %}
+			{% endif %} {% if models %} {% for model, result in models.items()
+			%}
 			<h2 class="text-2xl font-bold my-4">Using {{ model }}</h2>
 			<div class="w-full flex justify-center my-4">
-				<img
-					class="border"
-					src="{{ result['Solution'] }}"
-					alt="nn0_path" />
+				<div>
+					<img
+						class="border"
+						src="{{ result['Solution'] }}"
+						alt="nn0_path" />
+					<a
+						class="text-blue-600 underline"
+						href="{{ result['Solution'] }}"
+						>Click this link if image shown is not correct</a
+					>
+				</div>
 				{% if result['Journey'] != None %}
-                {{ result['Journey'] }}
-				<video
-					class="border"
-					autoplay="autoplay"
-					controls="controls"
-					preload="preload"
-					loop>
-					<source
-						src="{{ result['Journey'] }}"
-						type="video/mp4" />
-				</video>
+				<div>
+					<video
+						class="border"
+						autoplay="autoplay"
+						controls="controls"
+						preload="preload"
+						loop>
+						<source
+							src="{{ result['Journey'] }}"
+							type="video/mp4" />
+					</video>
+					<a
+						class="text-blue-600 underline"
+						href="{{ result['Journey'] }}"
+						>Click this link if video shown is not correct</a
+					>
+				</div>
 				{% endif %}
 			</div>
 			<h2 class="text-2xl font-bold my-4">Tour: {{ result['Tour'] }}</h2>
