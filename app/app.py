@@ -39,12 +39,20 @@ def home():
 
     if request.method == 'POST':
         request_args = list(request.form.to_dict().values())
-        
+        print(request_args)
         if request_args[1] == 'GO':
             try:
                 NODES = int(request_args[0])
             except:
-                NODES = 1
+                NODES = 5
+            print('new', NODES)
+        elif request_args[1] in ['NN_0', 'NN_1', 'NN_2', 'NX_CHRISTOFIDE', 'NX_GREEDY', 'COMPARE']:
+            try:
+                temp = int(request_args[0])
+            except:
+                temp = 0
+            if temp > 0:
+                NODES = temp
             print('new', NODES)
         print('cd', NODES)
             

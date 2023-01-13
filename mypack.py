@@ -570,19 +570,21 @@ def saveVideo(vdo: str) -> str:
     for i in range(len(files)):
         frames.append([plt.imshow(img[i], animated=True)])
 
-    plt.rcParams['animation.ffmpeg_path'] = './ffmpeg'
+    # plt.rcParams['animation.ffmpeg_path'] = '/usr/bin/ffmpeg'
 
-    ani = animation.ArtistAnimation(fig, frames, interval=200, blit=True,
-                                    repeat_delay=1000)
+    ani = animation.ArtistAnimation(fig, frames, interval=200, blit=True, repeat_delay=1000)
     FFwriter = animation.FFMpegWriter(fps=5)
-    
     try:
         ani.save(f'{_VDO_PATH}/{vdo}.mp4',  writer=FFwriter)
-        print(os.path.exists(f'{_VDO_PATH}/{vdo}.mp4'), end='\n\n\n')
+    except:
+        print(f'Fail to save video {_VDO_PATH}/{vdo}.mp4')
+        
+    try:
         with open(f'{_VDO_PATH}/{vdo}.mp4', 'rb') as f:
             CLIENT.upload_fileobj(f, BUCKET_NAME, f'videos/{vdo}.mp4', ExtraArgs={
                 'ACL': 'public-read'
             })
+        print('Save to Space')
     except FileNotFoundError as e:
         print(e)
     except botocore.exceptions.ClientError as e:
