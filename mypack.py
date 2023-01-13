@@ -558,8 +558,8 @@ def saveVideo(vdo: str) -> str | None:
     Args:
         vdo (str): the name of the video
     """
-    print(subprocess.run(['sudo', 'apt', 'install', 'ffmpeg']))
-    print(subprocess.run(['ffmpeg', '-version']))
+    # print(subprocess.run(['sudo', 'apt', 'install', 'ffmpeg']))
+    # print(subprocess.run(['ffmpeg', '-version']))
     if not os.path.exists('./app/static/videos'):
         os.makedirs('./app/static/videos')
         
