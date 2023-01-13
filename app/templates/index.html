@@ -75,6 +75,7 @@
 			%}
 			<h2 class="text-2xl font-bold my-4">Using {{ model }}</h2>
 			<div class="w-full flex justify-center my-4">
+                {% if result['Solution'] %}
 				<div>
 					<img
 						class="border"
@@ -86,6 +87,7 @@
 						>Click this link if image shown is not correct</a
 					>
 				</div>
+                {% endif %}
 				{% if result['Journey'] != None %}
 				<div>
 					<video
