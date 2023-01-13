@@ -558,6 +558,9 @@ def saveVideo(vdo: str) -> str:
         vdo (str): the name of the video
     """
     # plt.rcParams['animation.ffmpeg_path'] = './env/lib/python3.10/site-packages/ffmpeg'
+    if not os.path.exists('./app/static/videos'):
+        os.makedirs('./app/static/videos')
+        
     fig = plt.figure("Animation")
     plt.clf()
 
