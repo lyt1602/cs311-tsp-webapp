@@ -75,6 +75,9 @@ def home():
             
             for f in ['NN_0', 'NN_1', 'NN_2']:
                 print('in', NODES)
+                print('in', G)
+                if G == None:
+                    G = mypack.getGraph(NODES)
                 try:
                     NODES = len(list(G.nodes())) if NODES == None else NODES
                 except AttributeError:
