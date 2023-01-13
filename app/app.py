@@ -126,7 +126,6 @@ def home():
             print('solution', solution_path)
             
             mypack.getPathFrames(G, T)
-            print('frames of path', mypack.os.listdir('./static/images'))
             
             tour_path = mypack.saveVideo('tour')
             

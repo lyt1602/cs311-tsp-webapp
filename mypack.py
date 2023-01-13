@@ -547,6 +547,7 @@ def getPathFrames(graph: nx.classes.digraph.DiGraph, path: set) -> None:
         plt.savefig(f'{_IMG_PATH}/f{i}.png')
         plt.close()
         # plt.show()
+        print(os.listdir(f'{_IMG_PATH}'))
 
 
 def saveVideo(vdo: str) -> str:
