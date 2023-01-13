@@ -9,6 +9,7 @@ import glob
 import re
 import boto3
 import botocore
+import subprocess
 
 # ---------------------------------------------------------------------------- #
 #                                  GLOBAL VAR                                  #
@@ -557,7 +558,8 @@ def saveVideo(vdo: str) -> str | None:
     Args:
         vdo (str): the name of the video
     """
-    plt.rcParams['animation.ffmpeg_path'] = './ffmpeg'
+    print(subprocess.run(['ffmpeg']))
+    # plt.rcParams['animation.ffmpeg_path'] = './ffmpeg'
     print('statics', os.listdir('./app/static/'))
     if not os.path.exists('./app/static/videos'):
         os.makedirs('./app/static/videos')
