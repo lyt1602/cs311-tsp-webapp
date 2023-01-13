@@ -560,8 +560,6 @@ def saveVideo(vdo: str) -> str | None:
     """
     print(subprocess.run(['sudo', 'apt', 'install', 'ffmpeg']))
     print(subprocess.run(['ffmpeg', '-version']))
-    # plt.rcParams['animation.ffmpeg_path'] = './ffmpeg'
-    print('statics', os.listdir('./app/static/'))
     if not os.path.exists('./app/static/videos'):
         os.makedirs('./app/static/videos')
         
