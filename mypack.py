@@ -47,6 +47,10 @@ def clearDir() -> None:
         os.remove(f)
     for f in glob.glob(f'{_VDO_PATH}/*'):
         os.remove(f)
+    if not os.path.exists('./app/static/images'):
+        os.makedirs('./app/static/images')
+    if not os.path.exists('./app/static/videos'):
+        os.makedirs('./app/static/videos')
 
 
 def pairs(*lists: list) -> tuple:
@@ -359,7 +363,7 @@ def nx_greedy_tsp(graph: nx.classes.digraph.DiGraph, nodes: list) -> tuple:
     return (g, tour, total_weight)
 
 
-def saveGraph(graph: nx.classes.digraph.DiGraph, filename: str, txt: str = '') -> bool:
+def saveGraph(graph: nx.classes.digraph.DiGraph, filename: str, txt: str = '') -> str:
     """
     Save a graph as a png image
 
@@ -388,7 +392,9 @@ def saveGraph(graph: nx.classes.digraph.DiGraph, filename: str, txt: str = '') -
                 'ACL': 'public-read'
             })
     except FileNotFoundError:
-        return os.path.exists(_IMG_PATH)
+        print()
+        if os.path.exists(_IMG_PATH):
+            return f'{_IMG_PATH}/{filename}.png'
 
     # os.remove(f'{_IMG_PATH}/{filename}.png')
 

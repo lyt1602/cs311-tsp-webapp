@@ -121,8 +121,13 @@ def home():
             else:
                 A, T, W = FUNC[func](G, NODES)
                 H = None
+            print(A, T, W, H)
             solution_path = mypack.saveTour(G, T, 'solution')
+            print('solution', solution_path)
+            
             mypack.getPathFrames(G, T)
+            print('frames of path', mypack.os.listdir('./static/images'))
+            
             tour_path = mypack.saveVideo('tour')
             
             if H != None and len(H) <= MAX_JRNY:
