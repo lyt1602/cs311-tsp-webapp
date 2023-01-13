@@ -550,14 +550,14 @@ def getPathFrames(graph: nx.classes.digraph.DiGraph, path: set) -> None:
         print(os.listdir(f'{_IMG_PATH}'))
 
 
-def saveVideo(vdo: str) -> str:
+def saveVideo(vdo: str) -> str | None:
     """
     Generate the video after using either the getJourneyFrames or getPathFrames
 
     Args:
         vdo (str): the name of the video
     """
-    # plt.rcParams['animation.ffmpeg_path'] = './env/lib/python3.10/site-packages/ffmpeg'
+    plt.rcParams['animation.ffmpeg_path'] = './ffmpeg'
     print('statics', os.listdir('./app/static/'))
     if not os.path.exists('./app/static/videos'):
         os.makedirs('./app/static/videos')
@@ -591,6 +591,7 @@ def saveVideo(vdo: str) -> str:
     except BaseException as e:
         print(e)
         print(f'Fail to save video {_VDO_PATH}/{vdo}.mp4')
+        return None
 
     try:
         with open(f'{_VDO_PATH}/{vdo}.mp4', 'rb') as f:
