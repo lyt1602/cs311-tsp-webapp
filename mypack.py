@@ -551,65 +551,65 @@ def getPathFrames(graph: nx.classes.digraph.DiGraph, path: set) -> None:
         print(os.listdir(f'{_IMG_PATH}'))
 
 
-def saveVideo(vdo: str) -> str | None:
-    """
-    Generate the video after using either the getJourneyFrames or getPathFrames
+# def saveVideo(vdo: str) -> str | None:
+#     """
+#     Generate the video after using either the getJourneyFrames or getPathFrames
 
-    Args:
-        vdo (str): the name of the video
-    """
-    # print(subprocess.run(['sudo', 'apt', 'install', 'ffmpeg']))
-    # print(subprocess.run(['ffmpeg', '-version']))
-    if not os.path.exists('./app/static/videos'):
-        os.makedirs('./app/static/videos')
+#     Args:
+#         vdo (str): the name of the video
+#     """
+#     # print(subprocess.run(['sudo', 'apt', 'install', 'ffmpeg']))
+#     # print(subprocess.run(['ffmpeg', '-version']))
+#     if not os.path.exists('./app/static/videos'):
+#         os.makedirs('./app/static/videos')
         
-    fig = plt.figure("Animation")
-    plt.clf()
+#     fig = plt.figure("Animation")
+#     plt.clf()
 
-    ax = fig.add_subplot()
-    ax.axis('off')
-    # fig.tight_layout()
+#     ax = fig.add_subplot()
+#     ax.axis('off')
+#     # fig.tight_layout()
 
-    files = [f for f in os.listdir(_IMG_PATH) if 'f' in f]
+#     files = [f for f in os.listdir(_IMG_PATH) if 'f' in f]
 
-    if len(files) == 0:
-        return
+#     if len(files) == 0:
+#         return
 
-    human_sort(files)
+#     human_sort(files)
 
-    img = [plt.imread(f'{_IMG_PATH}/{f}') for f in files]
-    frames = []  # for storing the generated images
-    for i in range(len(files)):
-        frames.append([plt.imshow(img[i], animated=True)])
+#     img = [plt.imread(f'{_IMG_PATH}/{f}') for f in files]
+#     frames = []  # for storing the generated images
+#     for i in range(len(files)):
+#         frames.append([plt.imshow(img[i], animated=True)])
 
-    # plt.rcParams['animation.ffmpeg_path'] = '/usr/bin/ffmpeg'
+#     # plt.rcParams['animation.ffmpeg_path'] = '/usr/bin/ffmpeg'
 
-    ani = animation.ArtistAnimation(
-        fig, frames, interval=200, blit=True, repeat_delay=1000)
-    FFwriter = animation.FFMpegWriter(fps=5)
-    try:
-        ani.save(f'{_VDO_PATH}/{vdo}.mp4', writer=FFwriter)
-    except BaseException as e:
-        print(e)
-        print(f'Fail to save video {_VDO_PATH}/{vdo}.mp4')
-        return None
+#     ani = animation.ArtistAnimation(
+#         fig, frames, interval=200, blit=True, repeat_delay=1000)
+#     FFwriter = animation.FFMpegWriter(fps=5)
+#     try:
+#         ani.save(f'{_VDO_PATH}/{vdo}.mp4', writer=FFwriter)
+#     except BaseException as e:
+#         print(e)
+#         print(f'Fail to save video {_VDO_PATH}/{vdo}.mp4')
+#         return None
 
-    try:
-        with open(f'{_VDO_PATH}/{vdo}.mp4', 'rb') as f:
-            CLIENT.upload_fileobj(f, BUCKET_NAME, f'videos/{vdo}.mp4', ExtraArgs={
-                'ACL': 'public-read'
-            })
-        print('Save to Space')
-    except FileNotFoundError as e:
-        print(e)
-    except botocore.exceptions.ClientError as e:
-        print(e)
-    except ValueError as e:
-        print(e)
+#     try:
+#         with open(f'{_VDO_PATH}/{vdo}.mp4', 'rb') as f:
+#             CLIENT.upload_fileobj(f, BUCKET_NAME, f'videos/{vdo}.mp4', ExtraArgs={
+#                 'ACL': 'public-read'
+#             })
+#         print('Save to Space')
+#     except FileNotFoundError as e:
+#         print(e)
+#     except botocore.exceptions.ClientError as e:
+#         print(e)
+#     except ValueError as e:
+#         print(e)
 
-    for f in glob.glob(f'{_IMG_PATH}/f*'):
-        os.remove(f)
+#     for f in glob.glob(f'{_IMG_PATH}/f*'):
+#         os.remove(f)
 
-    return f'{ENDPOINT}/videos/{vdo}.mp4'
+#     return f'{ENDPOINT}/videos/{vdo}.mp4'
 
-    # return f'{_VDO_PATH}/{vdo}.mp4'
+#     # return f'{_VDO_PATH}/{vdo}.mp4'
