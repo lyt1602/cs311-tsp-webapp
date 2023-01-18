@@ -15,31 +15,52 @@
 			<h1 class="text-3xl font-bold my-4">Your Graph</h1>
 			{% if graph_path %}
 			<div class="w-full flex justify-center my-4">
-				<img
-					class="border"
-					src="{{ graph_path }}"
-					alt="graph_path" />
+				<div>
+					<img
+						class="border"
+						src="{{ graph_path }}"
+						alt="graph_path" />
+					<a
+						class="text-blue-600 underline"
+						href="{{ graph_path }}"
+						>Click this link if image shown is not correct</a
+					>
+				</div>
 			</div>
 			{% endif%} {% if algo %}
 			<h1 class="text-3xl font-bold my-4">Solution - {{ algo }}</h1>
 			{% endif %}
 			<div class="w-full flex justify-center my-4">
 				{% if solution_path %}
-				<img
-					class="border"
-					src="{{ solution_path }}"
-					alt="solution_path" />
+				<div>
+					<img
+						class="border"
+						src="{{ solution_path }}"
+						alt="solution_path" />
+					<a
+						class="text-blue-600 underline"
+						href="{{ solution_path }}"
+						>Click this link if image shown is not correct</a
+					>
+				</div>
 				{% endif %} {% if tour_path %}
-				<video
-					class="border"
-					autoplay="autoplay"
-					controls="controls"
-					preload="preload"
-					loop>
-					<source
-						src="{{ tour_path }}"
-						type="video/mp4" />
-				</video>
+				<div>
+					<video
+						class="border"
+						autoplay="autoplay"
+						controls="controls"
+						preload="preload"
+						loop>
+						<source
+							src="{{ tour_path }}"
+							type="video/mp4" />
+					</video>
+					<a
+						class="text-blue-600 underline"
+						href="{{ tour_path }}"
+						>Click this link if image shown is not correct</a
+					>
+				</div>
 				{% endif %}
 			</div>
 			{% if tour %}
@@ -49,16 +70,23 @@
 				How the tour was discovered using {{ algo }}
 			</h2>
 			<div class="w-full flex justify-center my-4">
-				<video
-					class="border"
-					autoplay="autoplay"
-					controls="controls"
-					preload="preload"
-					loop>
-					<source
-						src="{{ journey_path }}"
-						type="video/mp4" />
-				</video>
+				<div>
+					<video
+						class="border"
+						autoplay="autoplay"
+						controls="controls"
+						preload="preload"
+						loop>
+						<source
+							src="{{ journey_path }}"
+							type="video/mp4" />
+					</video>
+					<a
+						class="text-blue-600 underline"
+						href="{{ journey_path }}"
+						>Click this link if image shown is not correct</a
+					>
+				</div>
 			</div>
 			{% endif %} {% if mst_path %}
 			<h1 class="text-3xl font-bold my-4">Compare</h1>
@@ -66,16 +94,23 @@
 				Lower Bound (MST) - {{ mst_w }}
 			</h2>
 			<div class="w-full flex justify-center my-4">
-				<img
-					class="border"
-					src="{{ mst_path }}"
-					alt="mst_path" />
+				<div>
+					<img
+						class="border"
+						src="{{ mst_path }}"
+						alt="mst_path" />
+					<a
+						class="text-blue-600 underline"
+						href="{{ mst_path }}"
+						>Click this link if image shown is not correct</a
+					>
+				</div>
 			</div>
 			{% endif %} {% if models %} {% for model, result in models.items()
 			%}
 			<h2 class="text-2xl font-bold my-4">Using {{ model }}</h2>
 			<div class="w-full flex justify-center my-4">
-                {% if result['Solution'] %}
+				{% if result['Solution'] %}
 				<div>
 					<img
 						class="border"
@@ -87,8 +122,7 @@
 						>Click this link if image shown is not correct</a
 					>
 				</div>
-                {% endif %}
-				{% if result['Journey'] != None %}
+				{% endif %} {% if result['Journey'] != None %}
 				<div>
 					<video
 						class="border"

@@ -17,27 +17,27 @@ import subprocess
 _IMG_PATH = './app/static/images'
 _VDO_PATH = './app/static/videos'
 
-BUCKET_NAME = 'cs311-tsp-resources'
-ACCESS_ID = 'DO00TX3KH7FDH4JLGFX9'
-SECRET_KEY = 'q76iEzYPexj6xWT93GgrqfD9jLn/O+60YO8U+8uzsgE'
-REGION_NAME = 'sgp1'
-ENDPOINT_URL = 'https://sgp1.digitaloceanspaces.com'
-ENDPOINT = 'https://cs311-tsp-resources.sgp1.digitaloceanspaces.com'
+# BUCKET_NAME = 'cs311-tsp-resources'
+# ACCESS_ID = 'DO00TX3KH7FDH4JLGFX9'
+# SECRET_KEY = 'q76iEzYPexj6xWT93GgrqfD9jLn/O+60YO8U+8uzsgE'
+# REGION_NAME = 'sgp1'
+# ENDPOINT_URL = 'https://sgp1.digitaloceanspaces.com'
+# ENDPOINT = 'https://cs311-tsp-resources.sgp1.digitaloceanspaces.com'
 
 _RANDOM_SEED = 42
 _GRAPH_TYPE = False
 _MIN_INTV = 1
 _MAX_INTV = 10
 
-SESSION = boto3.session.Session()
-CLIENT = SESSION.client('s3',
-                        endpoint_url=ENDPOINT_URL,
-                        config=botocore.config.Config(s3={
-                            'addressing_style': 'virtual',
-                        }),
-                        region_name=REGION_NAME,
-                        aws_access_key_id=ACCESS_ID,
-                        aws_secret_access_key=SECRET_KEY)
+# SESSION = boto3.session.Session()
+# CLIENT = SESSION.client('s3',
+#                         endpoint_url=ENDPOINT_URL,
+#                         config=botocore.config.Config(s3={
+#                             'addressing_style': 'virtual',
+#                         }),
+#                         region_name=REGION_NAME,
+#                         aws_access_key_id=ACCESS_ID,
+#                         aws_secret_access_key=SECRET_KEY)
 # ---------------------------------------------------------------------------- #
 #                                HELPER FUNCTION                               #
 # ---------------------------------------------------------------------------- #
@@ -217,7 +217,7 @@ def NN_1(graph: nx.classes.digraph.DiGraph, nodes: list) -> tuple:
     if True in nodes:
         u = nodes.index(True)
         candidates = {n: graph.edges[u, n]['weight']
-                        for n in [v for v in graph.neighbors(u)]}
+                      for n in [v for v in graph.neighbors(u)]}
         min_v = min(candidates, key=candidates.get)
         g.add_edge(u, min_v, weight=candidates[min_v])
         history.append(set(g.edges()))
@@ -253,7 +253,7 @@ def NN_2(graph: nx.classes.digraph.DiGraph, nodes: list) -> tuple:
     """
     print('NN_2 graph', graph)
     print('NN_2 nodes', nodes)
-    
+
     g = nx.Graph()
     g.add_nodes_from([n for n in range(nodes)])
 
@@ -326,7 +326,7 @@ def nx_christofide(graph: nx.classes.digraph.DiGraph, nodes: list) -> tuple:
 
     cycle = christofides(graph)
     edge_list = [(*i, graph.edges[i]['weight'])
-                    for i in list(nx.utils.pairwise(cycle))]
+                 for i in list(nx.utils.pairwise(cycle))]
 
     g.add_weighted_edges_from(edge_list)
 
@@ -355,7 +355,7 @@ def nx_greedy_tsp(graph: nx.classes.digraph.DiGraph, nodes: list) -> tuple:
 
     cycle = greedy_tsp(graph)
     edge_list = [(*i, graph.edges[i]['weight'])
-                    for i in list(nx.utils.pairwise(cycle))]
+                 for i in list(nx.utils.pairwise(cycle))]
     g.add_weighted_edges_from(edge_list)
 
     tour = nx.find_cycle(g)
@@ -380,26 +380,30 @@ def saveGraph(graph: nx.classes.digraph.DiGraph, filename: str, txt: str = '') -
     else:
         plt.figure(figsize=(9, 6))
     plt.clf()
+    
     pos = nx.spring_layout(graph)
     pos = nx.circular_layout(graph)
     nx.draw(graph, pos, with_labels=True, font_weight='bold')
     edge_weight = nx.get_edge_attributes(graph, 'weight')
     nx.draw_networkx_edge_labels(graph, pos, edge_labels=edge_weight)
     plt.title(label=txt)
-    try:
-        plt.savefig(f'{_IMG_PATH}/{filename}.png')
-        with open(f'{_IMG_PATH}/{filename}.png', 'rb') as f:
-            CLIENT.upload_fileobj(f, BUCKET_NAME, f'images/{filename}.png', ExtraArgs={
-                'ACL': 'public-read'
-            })
-    except FileNotFoundError:
-        print()
-        if os.path.exists(_IMG_PATH):
-            return f'{_IMG_PATH}/{filename}.png'
+    plt.savefig(f'{_IMG_PATH}/{filename}.png')
+
+    return f'{_IMG_PATH}/{filename}.png'.replace('/app', '')
+    # try:
+    #     plt.savefig(f'{_IMG_PATH}/{filename}.png')
+    #     with open(f'{_IMG_PATH}/{filename}.png', 'rb') as f:
+    #         CLIENT.upload_fileobj(f, BUCKET_NAME, f'images/{filename}.png', ExtraArgs={
+    #             'ACL': 'public-read'
+    #         })
+    # except FileNotFoundError:
+    #     print()
+    #     if os.path.exists(_IMG_PATH):
+    #         return f'{_IMG_PATH}/{filename}.png'
 
     # os.remove(f'{_IMG_PATH}/{filename}.png')
 
-    return f'{ENDPOINT}/images/{filename}.png'
+    # return f'{ENDPOINT}/images/{filename}.png'
 
 
 def saveTour(graph: nx.classes.digraph.DiGraph, tour: list, filename: str) -> str:
@@ -445,22 +449,24 @@ def saveTour(graph: nx.classes.digraph.DiGraph, tour: list, filename: str) -> st
         graph, pos, edge_labels=edge_labels
     )
     plt.title(f'weight - {sum(edge_labels.values())}')
-    # plt.savefig(f'{_IMG_PATH}/{filename}.png')
+    plt.savefig(f'{_IMG_PATH}/{filename}.png')
 
-    try:
-        plt.savefig(f'{_IMG_PATH}/{filename}.png')
-        with open(f'{_IMG_PATH}/{filename}.png', 'rb') as f:
-            CLIENT.upload_fileobj(f, BUCKET_NAME, f'images/{filename}.png', ExtraArgs={
-                'ACL': 'public-read'
-            })
-    except FileNotFoundError:
-        return os.path.exists(_IMG_PATH)
+    return f'{_IMG_PATH}/{filename}.png'.replace('/app', '')
 
-    plt.close()
+# try:
+#     plt.savefig(f'{_IMG_PATH}/{filename}.png')
+#     with open(f'{_IMG_PATH}/{filename}.png', 'rb') as f:
+#         CLIENT.upload_fileobj(f, BUCKET_NAME, f'images/{filename}.png', ExtraArgs={
+#             'ACL': 'public-read'
+#         })
+# except FileNotFoundError:
+#     return os.path.exists(_IMG_PATH)
 
-    return f'{ENDPOINT}/images/{filename}.png'
-    # return f'{_IMG_PATH}/{filename}.png'
-    # plt.show()
+# plt.close()
+
+# return f'{ENDPOINT}/images/{filename}.png'
+# return f'{_IMG_PATH}/{filename}.png'
+# plt.show()
 
 
 def getJourneyFrames(graph: nx.classes.digraph.DiGraph, journey: list) -> None:
@@ -551,65 +557,66 @@ def getPathFrames(graph: nx.classes.digraph.DiGraph, path: set) -> None:
         print(os.listdir(f'{_IMG_PATH}'))
 
 
-# def saveVideo(vdo: str) -> str | None:
-#     """
-#     Generate the video after using either the getJourneyFrames or getPathFrames
+def saveVideo(vdo: str) -> str | None:
+    """
+    Generate the video after using either the getJourneyFrames or getPathFrames
 
-#     Args:
-#         vdo (str): the name of the video
-#     """
-#     # print(subprocess.run(['sudo', 'apt', 'install', 'ffmpeg']))
-#     # print(subprocess.run(['ffmpeg', '-version']))
-#     if not os.path.exists('./app/static/videos'):
-#         os.makedirs('./app/static/videos')
-        
-#     fig = plt.figure("Animation")
-#     plt.clf()
+    Args:
+        vdo (str): the name of the video
+    """
+    # print(subprocess.run(['sudo', 'apt', 'install', 'ffmpeg']))
+    # print(subprocess.run(['ffmpeg', '-version']))
+    if not os.path.exists('./app/static/videos'):
+        os.makedirs('./app/static/videos')
 
-#     ax = fig.add_subplot()
-#     ax.axis('off')
-#     # fig.tight_layout()
+    fig = plt.figure("Animation")
+    plt.clf()
 
-#     files = [f for f in os.listdir(_IMG_PATH) if 'f' in f]
+    ax = fig.add_subplot()
+    ax.axis('off')
+    # fig.tight_layout()
 
-#     if len(files) == 0:
-#         return
+    files = [f for f in os.listdir(_IMG_PATH) if 'f' in f]
 
-#     human_sort(files)
+    if len(files) == 0:
+        return
 
-#     img = [plt.imread(f'{_IMG_PATH}/{f}') for f in files]
-#     frames = []  # for storing the generated images
-#     for i in range(len(files)):
-#         frames.append([plt.imshow(img[i], animated=True)])
+    human_sort(files)
 
-#     # plt.rcParams['animation.ffmpeg_path'] = '/usr/bin/ffmpeg'
+    img = [plt.imread(f'{_IMG_PATH}/{f}') for f in files]
+    frames = []  # for storing the generated images
+    for i in range(len(files)):
+        frames.append([plt.imshow(img[i], animated=True)])
 
-#     ani = animation.ArtistAnimation(
-#         fig, frames, interval=200, blit=True, repeat_delay=1000)
-#     FFwriter = animation.FFMpegWriter(fps=5)
-#     try:
-#         ani.save(f'{_VDO_PATH}/{vdo}.mp4', writer=FFwriter)
-#     except BaseException as e:
-#         print(e)
-#         print(f'Fail to save video {_VDO_PATH}/{vdo}.mp4')
-#         return None
+    # plt.rcParams['animation.ffmpeg_path'] = '/usr/bin/ffmpeg'
 
-#     try:
-#         with open(f'{_VDO_PATH}/{vdo}.mp4', 'rb') as f:
-#             CLIENT.upload_fileobj(f, BUCKET_NAME, f'videos/{vdo}.mp4', ExtraArgs={
-#                 'ACL': 'public-read'
-#             })
-#         print('Save to Space')
-#     except FileNotFoundError as e:
-#         print(e)
-#     except botocore.exceptions.ClientError as e:
-#         print(e)
-#     except ValueError as e:
-#         print(e)
+    ani = animation.ArtistAnimation(
+        fig, frames, interval=200, blit=True, repeat_delay=1000)
+    FFwriter = animation.FFMpegWriter(fps=5)
+    
+    try:
+        ani.save(f'{_VDO_PATH}/{vdo}.mp4', writer=FFwriter)
+    except BaseException as e:
+        print(e)
+        print(f'Fail to save video {_VDO_PATH}/{vdo}.mp4')
+        return None
 
-#     for f in glob.glob(f'{_IMG_PATH}/f*'):
-#         os.remove(f)
+    # try:
+    #     with open(f'{_VDO_PATH}/{vdo}.mp4', 'rb') as f:
+    #         CLIENT.upload_fileobj(f, BUCKET_NAME, f'videos/{vdo}.mp4', ExtraArgs={
+    #             'ACL': 'public-read'
+    #         })
+    #     print('Save to Space')
+    # except FileNotFoundError as e:
+    #     print(e)
+    # except botocore.exceptions.ClientError as e:
+    #     print(e)
+    # except ValueError as e:
+    #     print(e)
 
-#     return f'{ENDPOINT}/videos/{vdo}.mp4'
+    for f in glob.glob(f'{_IMG_PATH}/f*'):
+        os.remove(f)
 
-#     # return f'{_VDO_PATH}/{vdo}.mp4'
+    # return f'{ENDPOINT}/videos/{vdo}.mp4'
+
+    return f'{_VDO_PATH}/{vdo}.mp4'.replace('/app', '')

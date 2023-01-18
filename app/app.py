@@ -35,18 +35,14 @@ def clear_media():
 @app.route('/', methods=['GET', 'POST'])
 def home():
     global G, NODES, FUNC, MODELS, A, W, T, H, graph_path, solution_path, journey_path, tour_path, mst_path
-    print('top', NODES)
 
     if request.method == 'POST':
         request_args = list(request.form.to_dict().values())
-        print(request_args)
         if request_args[1] == 'GO':
             try:
                 NODES = int(request_args[0])
             except:
                 NODES = 5
-            print('new', NODES)
-            
             G = mypack.getGraph(NODES)
             graph_path = mypack.saveGraph(G, 'mygraph')
             return render_template('index.html', graph_path=graph_path)
@@ -61,11 +57,7 @@ def home():
                 NODES = temp
                 G = mypack.getGraph(NODES)
                 graph_path = mypack.saveGraph(G, 'mygraph')
-                print('new', NODES)
                 
-        print('cd', NODES)
-        print('G', G)
-            
         func = request_args[1]
         # if func == 'GO':
         #     G = mypack.getGraph(NODES)
@@ -84,15 +76,13 @@ def home():
                 mst_path = mypack.saveGraph(MST[0], 'mst')
             
             for f in ['NN_0', 'NN_1', 'NN_2']:
-                print('in', NODES)
-                print('in', G)
                 if G == None:
                     G = mypack.getGraph(NODES)
                 try:
                     NODES = len(list(G.nodes())) if NODES == None else NODES
                 except AttributeError:
                     print('err', NODES)
-                print(FUNC[f](G, NODES))
+
                 A0, T0, W0, H0 = FUNC[f](G, NODES)
                 if len(H0) <= MAX_JRNY:
                     mypack.getJourneyFrames(G, H0)
@@ -102,11 +92,9 @@ def home():
                     'W': W0,
                     'H': H0,
                     'Solution': mypack.saveTour(G, T0, f),
-                    'Journey': None,
+                    'Journey': mypack.saveVideo(f'journey_{f}'),
                     'Tour': ' -> '.join([str(t[0]) for t in T0]) + ' -> 0'
                 }
-                # print(MODELS)
-                # mypack.()
                 
             return render_template('index.html',
                                    graph_path=graph_path,
@@ -115,20 +103,19 @@ def home():
                                    models=MODELS)
             
         else:
-            print(FUNC[func])
             if func in ['NN_0', 'NN_1', 'NN_2']:
                 A, T, W, H = FUNC[func](G, NODES)
             else:
                 A, T, W = FUNC[func](G, NODES)
                 H = None
-            print(A, T, W, H)
+            
             solution_path = mypack.saveTour(G, T, 'solution')
-            print('solution', solution_path)
             
             mypack.getPathFrames(G, T)
+            tour_path = mypack.saveVideo(f'tour_{func}')
             
-            tour_path = None
-            journey_path = None
+            mypack.getJourneyFrames(G, H)
+            journey_path = mypack.saveVideo(f'journey_{func}')
             
             return render_template('index.html',
                                    graph_path=graph_path,
@@ -138,8 +125,8 @@ def home():
                                                     for t in T]) + ' -> 0',
                                    journey_path=journey_path,
                                    tour_path=tour_path)
+            
     NODES = mypack.random.randint(MIN_NODE, MAX_NODE)
-    print('rand', NODES)
     G = mypack.getGraph(NODES)
     graph_path = mypack.saveGraph(G, 'mygraph')
     return render_template('index.html', graph_path=graph_path)
