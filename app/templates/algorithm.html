@@ -11,7 +11,7 @@
 {% else %}
 <title>CS311 TSP</title>
 {% endif %} {% endblock %} {% block body %}
-<body class="w-screen h-screen overflow-y-hidden">
+<body class="w-screen h-screen overflow-y-scroll">
 	{% from '_mymacros.html' import NavComponent, SidebarComponent %} {{
 	NavComponent() }}
 
@@ -20,59 +20,14 @@
 			class="flex justify-center items-center w-screen min-h-screen p-10 text-white">
 			<!-- Component Start -->
 			<div class="flex flex-col w-full lg:w-3/4 bg-[#353535]">
-				{% for name, content in { 'NN_0': 'Lorem ipsum dolor sit amet,
-				consectetur adipiscing elit. Sed nisl felis, maximus vel purus
-				sit amet, fringilla ultrices risus. Sed tempor neque id dui
-				varius ullamcorper. Pellentesque aliquam ut ipsum et molestie.
-				Sed aliquam ullamcorper felis id finibus. Fusce vel sagittis
-				tortor. Donec blandit fermentum massa, vitae sodales metus
-				bibendum tincidunt. Quisque ultricies dolor eget purus
-				convallis, non pharetra libero hendrerit. In est nulla,
-				tincidunt ut est a, eleifend porttitor urna. Aliquam tincidunt
-				est lorem, nec suscipit dui iaculis at.', 'NN_1': 'Lorem ipsum
-				dolor sit amet, consectetur adipiscing elit. Sed nisl felis,
-				maximus vel purus sit amet, fringilla ultrices risus. Sed tempor
-				neque id dui varius ullamcorper. Pellentesque aliquam ut ipsum
-				et molestie. Sed aliquam ullamcorper felis id finibus. Fusce vel
-				sagittis tortor. Donec blandit fermentum massa, vitae sodales
-				metus bibendum tincidunt. Quisque ultricies dolor eget purus
-				convallis, non pharetra libero hendrerit. In est nulla,
-				tincidunt ut est a, eleifend porttitor urna. Aliquam tincidunt
-				est lorem, nec suscipit dui iaculis at.', 'NN_2': 'Lorem ipsum
-				dolor sit amet, consectetur adipiscing elit. Sed nisl felis,
-				maximus vel purus sit amet, fringilla ultrices risus. Sed tempor
-				neque id dui varius ullamcorper. Pellentesque aliquam ut ipsum
-				et molestie. Sed aliquam ullamcorper felis id finibus. Fusce vel
-				sagittis tortor. Donec blandit fermentum massa, vitae sodales
-				metus bibendum tincidunt. Quisque ultricies dolor eget purus
-				convallis, non pharetra libero hendrerit. In est nulla,
-				tincidunt ut est a, eleifend porttitor urna. Aliquam tincidunt
-				est lorem, nec suscipit dui iaculis at.', 'NX_CHRISTOFIDE':
-				'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-				nisl felis, maximus vel purus sit amet, fringilla ultrices
-				risus. Sed tempor neque id dui varius ullamcorper. Pellentesque
-				aliquam ut ipsum et molestie. Sed aliquam ullamcorper felis id
-				finibus. Fusce vel sagittis tortor. Donec blandit fermentum
-				massa, vitae sodales metus bibendum tincidunt. Quisque ultricies
-				dolor eget purus convallis, non pharetra libero hendrerit. In
-				est nulla, tincidunt ut est a, eleifend porttitor urna. Aliquam
-				tincidunt est lorem, nec suscipit dui iaculis at.', 'NX_GREEDY':
-				'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-				nisl felis, maximus vel purus sit amet, fringilla ultrices
-				risus. Sed tempor neque id dui varius ullamcorper. Pellentesque
-				aliquam ut ipsum et molestie. Sed aliquam ullamcorper felis id
-				finibus. Fusce vel sagittis tortor. Donec blandit fermentum
-				massa, vitae sodales metus bibendum tincidunt. Quisque ultricies
-				dolor eget purus convallis, non pharetra libero hendrerit. In
-				est nulla, tincidunt ut est a, eleifend porttitor urna. Aliquam
-				tincidunt est lorem, nec suscipit dui iaculis at.', }.items() %}
+				{% for name, content in html.items() %}
 				<button
 					class="group border-t border-r border-l border-black focus:outline-none">
 					<div
-						class="flex items-center justify-between h-12 px-3 font-semibold hover:bg-[#515151]">
-						<span class="truncate">{{ name }}</span>
+						class="flex items-center justify-between h-24 px-3 font-semibold hover:bg-[#515151]">
+						<span class="truncate text-3xl">{{ name }}</span>
 						<svg
-							class="h-4 w-4"
+							class="h-12 w-12"
 							xmlns="http://www.w3.org/2000/svg"
 							viewBox="0 0 20 20"
 							fill="currentColor">
@@ -83,9 +38,9 @@
 						</svg>
 					</div>
 					<div
-						class="max-h-0 overflow-hidden duration-300 group-focus:max-h-40">
+						class="h-0 overflow-x-hidden overflow-y-scroll duration-300 group-focus:h-max">
 						<section class="w-full text-left mx-4 my-2">
-							{{ content }}
+							{{ content | safe}}
 						</section>
 					</div>
 				</button>

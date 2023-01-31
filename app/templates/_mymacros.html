@@ -31,7 +31,7 @@
 				max="100" />
 			<input
 				type="submit"
-				class="px-4 py-2 bg-[#353535] rounded-tr-lg rounded-br-lg font-black cursor-pointer"
+				class="px-4 py-2 bg-[#353535] rounded-tr-lg rounded-br-lg font-black cursor-pointer hover:bg-[#3C3C3C] hover:shadow-lg"
 				name="make-graph"
 				value="GO" />
 		</div>
@@ -42,7 +42,7 @@
 			'compare': 'COMPARE' }.items() %}
 			<input
 				type="submit"
-				class="px-4 py-2 bg-[#353535] rounded-lg font-black cursor-pointer"
+				class="px-4 py-2 bg-[#353535] rounded-lg font-black cursor-pointer hover:bg-[#3C3C3C] hover:shadow-lg"
 				name="{{ name }}"
 				value="{{ value }}" />
 			{% endfor %}
@@ -52,7 +52,7 @@
 			{% for name, value in { 'report': 'REPORT', 'algorithm': 'ALGO' }.items() %}
 			<input
 				type="submit"
-				class="px-4 py-2 bg-[#353535] rounded-lg font-black cursor-pointer"
+				class="px-4 py-2 bg-[#353535] rounded-lg font-black cursor-pointer hover:bg-[#3C3C3C] hover:shadow-lg"
 				name="{{ name }}"
 				value="{{ value }}" />
 			{% endfor %}
