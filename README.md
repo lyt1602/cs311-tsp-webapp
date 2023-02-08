@@ -27,7 +27,7 @@ env\Scripts\Activate.ps1
 Install all requirement
 
 ```bash
-pip install -r requirement.txt
+pip install -r requirements.txt
 ```
 
 Run the application
