@@ -6,8 +6,9 @@ import mypack
 app = Flask(__name__)
 
 MAX_JRNY = 100
-MIN_NODE, MAX_NODE = 5,10
-G, A, W, T, G, NODES, graph_path, solution_path, journey_path, tour_path, mst_path = [None for _ in range(11)]
+MIN_NODE, MAX_NODE = 5, 10
+G, A, W, T, G, NODES, graph_path, solution_path, journey_path, tour_path, mst_path = [
+    None for _ in range(11)]
 
 MODELS = {
     f'NN_{i}': {
@@ -30,10 +31,12 @@ FUNC = {
     'NX_GREEDY': mypack.nx_greedy_tsp
 }
 
+
 @app.before_first_request
 def clear_media():
     mypack.clearDir()
-    
+
+
 @app.route('/', methods=['GET', 'POST'])
 def home():
     global G, NODES, FUNC, MODELS, A, W, T, H, graph_path, solution_path, journey_path, tour_path, mst_path
@@ -48,35 +51,35 @@ def home():
             G = mypack.getGraph(NODES)
             graph_path = mypack.saveGraph(G, 'mygraph')
             return render_template('index.html', graph_path=graph_path)
-        
+
         elif request_args[1] in ['NN_0', 'NN_1', 'NN_2', 'NX_CHRISTOFIDE', 'NX_GREEDY', 'COMPARE']:
             try:
                 temp = int(request_args[0])
             except:
                 temp = 0
-                
+
             if temp > 0:
                 NODES = temp
                 G = mypack.getGraph(NODES)
                 graph_path = mypack.saveGraph(G, 'mygraph')
-                
+
         func = request_args[1]
         # if func == 'GO':
         #     G = mypack.getGraph(NODES)
         #     graph_path = mypack.saveGraph(G, 'mygraph')
         #     return render_template('index.html', graph_path=graph_path)
-        
+
         if func == 'REPORT':
             return redirect('/report')
-        
+
         elif func == 'ALGO':
             return redirect('/algorithm')
-        
+
         elif func == 'COMPARE':
             MST = mypack.getMST(G)
             if isinstance(MST, tuple):
                 mst_path = mypack.saveGraph(MST[0], 'mst')
-            
+
             for f in ['NN_0', 'NN_1', 'NN_2']:
                 if G == None:
                     G = mypack.getGraph(NODES)
@@ -97,28 +100,33 @@ def home():
                     'Journey': mypack.saveVideo(f'journey_{f}'),
                     'Tour': ' -> '.join([str(t[0]) for t in T0]) + ' -> 0'
                 }
-                
+
             return render_template('index.html',
                                    graph_path=graph_path,
-                                   mst_path=mst_path if isinstance(MST, tuple) else None,
-                                   mst_w=MST[1] if isinstance(MST, tuple) else None,
+                                   mst_path=mst_path if isinstance(
+                                       MST, tuple) else None,
+                                   mst_w=MST[1] if isinstance(
+                                       MST, tuple) else None,
                                    models=MODELS)
-            
+
         else:
             if func in ['NN_0', 'NN_1', 'NN_2']:
                 A, T, W, H = FUNC[func](G, NODES)
             else:
                 A, T, W = FUNC[func](G, NODES)
                 H = None
-            
+
             solution_path = mypack.saveTour(G, T, 'solution')
-            
+
             mypack.getPathFrames(G, T)
             tour_path = mypack.saveVideo(f'tour_{func}')
-            
-            mypack.getJourneyFrames(G, H)
-            journey_path = mypack.saveVideo(f'journey_{func}')
-            
+
+            if func in ['NN_0', 'NN_1', 'NN_2']:
+                mypack.getJourneyFrames(G, H)
+                journey_path = mypack.saveVideo(f'journey_{func}')
+            else:
+                journey_path = None
+
             return render_template('index.html',
                                    graph_path=graph_path,
                                    solution_path=solution_path,
@@ -127,7 +135,7 @@ def home():
                                                     for t in T]) + ' -> 0',
                                    journey_path=journey_path,
                                    tour_path=tour_path)
-            
+
     NODES = mypack.random.randint(MIN_NODE, MAX_NODE)
     G = mypack.getGraph(NODES)
     graph_path = mypack.saveGraph(G, 'mygraph')
@@ -136,12 +144,15 @@ def home():
 
 @app.route('/report')
 def report():
-    return render_template('report.html', title='Report')
+    return redirect('https://docs.google.com/document/d/1-1t1nb2cJEJC-GWDKk0k9TsSgAbp9sR1Qt_S21xg2G8/edit?usp=sharing', code=302)
+
 
 @app.route('/algorithm')
 def algorithm():
     # test = {'NN_0': codecs.open("./app/static/markdown/NN_0.md", mode="r", encoding="utf-8")}
     algos = ['NN_0', 'NN_1', 'NN_2', 'NX_CHRISTOFIDE', 'NX_GREEDY']
-    i_md = [codecs.open(f"./app/static/markdown/{name}.md", mode="r", encoding="utf-8") for name in algos]
-    html = {algo: html_md for algo, html_md in zip(algos, [markdown(md.read()) for md in i_md])}
+    i_md = [codecs.open(
+        f"./app/static/markdown/{name}.md", mode="r", encoding="utf-8") for name in algos]
+    html = {algo: html_md for algo, html_md in zip(
+        algos, [markdown(md.read()) for md in i_md])}
     return render_template('algorithm.html', title='Algorithm', html=html)
