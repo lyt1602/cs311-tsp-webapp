@@ -38,3 +38,5 @@ flask run
 ```
 
 You can check the app out on [http://127.0.0.1:5000](http://127.0.0.1:5000)
+
+Note: If you have trouble creating video, you may need to install ffmpeg on your OS.
