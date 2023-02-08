@@ -7,9 +7,6 @@ from itertools import combinations, product
 import os
 import glob
 import re
-import boto3
-import botocore
-import subprocess
 
 # ---------------------------------------------------------------------------- #
 #                                  GLOBAL VAR                                  #
@@ -17,27 +14,11 @@ import subprocess
 _IMG_PATH = './app/static/images'
 _VDO_PATH = './app/static/videos'
 
-# BUCKET_NAME = 'cs311-tsp-resources'
-# ACCESS_ID = 'DO00TX3KH7FDH4JLGFX9'
-# SECRET_KEY = 'q76iEzYPexj6xWT93GgrqfD9jLn/O+60YO8U+8uzsgE'
-# REGION_NAME = 'sgp1'
-# ENDPOINT_URL = 'https://sgp1.digitaloceanspaces.com'
-# ENDPOINT = 'https://cs311-tsp-resources.sgp1.digitaloceanspaces.com'
-
 _RANDOM_SEED = 42
 _GRAPH_TYPE = False
 _MIN_INTV = 1
 _MAX_INTV = 10
 
-# SESSION = boto3.session.Session()
-# CLIENT = SESSION.client('s3',
-#                         endpoint_url=ENDPOINT_URL,
-#                         config=botocore.config.Config(s3={
-#                             'addressing_style': 'virtual',
-#                         }),
-#                         region_name=REGION_NAME,
-#                         aws_access_key_id=ACCESS_ID,
-#                         aws_secret_access_key=SECRET_KEY)
 # ---------------------------------------------------------------------------- #
 #                                HELPER FUNCTION                               #
 # ---------------------------------------------------------------------------- #
@@ -390,21 +371,6 @@ def saveGraph(graph: nx.classes.digraph.DiGraph, filename: str, txt: str = '') -
     plt.savefig(f'{_IMG_PATH}/{filename}.png')
 
     return f'{_IMG_PATH}/{filename}.png'.replace('/app', '')
-    # try:
-    #     plt.savefig(f'{_IMG_PATH}/{filename}.png')
-    #     with open(f'{_IMG_PATH}/{filename}.png', 'rb') as f:
-    #         CLIENT.upload_fileobj(f, BUCKET_NAME, f'images/{filename}.png', ExtraArgs={
-    #             'ACL': 'public-read'
-    #         })
-    # except FileNotFoundError:
-    #     print()
-    #     if os.path.exists(_IMG_PATH):
-    #         return f'{_IMG_PATH}/{filename}.png'
-
-    # os.remove(f'{_IMG_PATH}/{filename}.png')
-
-    # return f'{ENDPOINT}/images/{filename}.png'
-
 
 def saveTour(graph: nx.classes.digraph.DiGraph, tour: list, filename: str) -> str:
     """
@@ -452,21 +418,6 @@ def saveTour(graph: nx.classes.digraph.DiGraph, tour: list, filename: str) -> st
     plt.savefig(f'{_IMG_PATH}/{filename}.png')
 
     return f'{_IMG_PATH}/{filename}.png'.replace('/app', '')
-
-# try:
-#     plt.savefig(f'{_IMG_PATH}/{filename}.png')
-#     with open(f'{_IMG_PATH}/{filename}.png', 'rb') as f:
-#         CLIENT.upload_fileobj(f, BUCKET_NAME, f'images/{filename}.png', ExtraArgs={
-#             'ACL': 'public-read'
-#         })
-# except FileNotFoundError:
-#     return os.path.exists(_IMG_PATH)
-
-# plt.close()
-
-# return f'{ENDPOINT}/images/{filename}.png'
-# return f'{_IMG_PATH}/{filename}.png'
-# plt.show()
 
 
 def getJourneyFrames(graph: nx.classes.digraph.DiGraph, journey: list) -> None:
@@ -601,22 +552,8 @@ def saveVideo(vdo: str) -> str | None:
         print(f'Fail to save video {_VDO_PATH}/{vdo}.mp4')
         return None
 
-    # try:
-    #     with open(f'{_VDO_PATH}/{vdo}.mp4', 'rb') as f:
-    #         CLIENT.upload_fileobj(f, BUCKET_NAME, f'videos/{vdo}.mp4', ExtraArgs={
-    #             'ACL': 'public-read'
-    #         })
-    #     print('Save to Space')
-    # except FileNotFoundError as e:
-    #     print(e)
-    # except botocore.exceptions.ClientError as e:
-    #     print(e)
-    # except ValueError as e:
-    #     print(e)
-
     for f in glob.glob(f'{_IMG_PATH}/f*'):
         os.remove(f)
 
-    # return f'{ENDPOINT}/videos/{vdo}.mp4'
 
     return f'{_VDO_PATH}/{vdo}.mp4'.replace('/app', '')

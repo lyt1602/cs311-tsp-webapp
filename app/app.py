@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, redirect
-from markdown import markdown
 import codecs
 import mypack
 
@@ -149,7 +148,6 @@ def report():
 
 @app.route('/algorithm')
 def algorithm():
-    # test = {'NN_0': codecs.open("./app/static/markdown/NN_0.md", mode="r", encoding="utf-8")}
     algos = ['NN_0', 'NN_1', 'NN_2', 'NX_CHRISTOFIDE', 'NX_GREEDY']
     i_md = [codecs.open(
         f"./app/static/markdown/{name}.md", mode="r", encoding="utf-8") for name in algos]
